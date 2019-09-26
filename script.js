@@ -1,5 +1,8 @@
-let team = document.querySelector('#team-a');
+// import {nu} from 'data/characters';
 
+let team = document.querySelector('#team-a');
+let detailsText = document.querySelector('#details');
+// alert(nu.name);
 
 team.addEventListener('click', function(e) {
 	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay')) return;
