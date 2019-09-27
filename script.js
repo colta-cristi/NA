@@ -3,9 +3,10 @@
 let team = document.querySelector('#team-a');
 let detailsText = document.querySelector('#details');
 
-init('ch1', nu);
-init('ch2', nu);
-init('ch3', nu);
+// initialize character & skills data
+init('ch1', naruto);
+init('ch2', sakura);
+init('ch3', sasuke);
 
 team.addEventListener('click', function(e) {
 	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay')) return;
@@ -38,9 +39,9 @@ team.addEventListener('click', function(e) {
 
 function init(id, char) {
 	let charContainer = document.getElementById(id);
-	charContainer.querySelector('.avatar img').src = `images/${char.name}/${char.picture}`;
+	charContainer.querySelector('.avatar img').src = `images/${char.folderName}/avatar.jpg`;
 	skills = charContainer.querySelectorAll('.skills img:not(.selected-skill)');
 	skills.forEach((item, index) => {
-		item.src = `images/${char.name}/${char.skills[index].name}.jpg`;
+		item.src = `images/${char.folderName}/${index+1}.jpg`;
 	} );
 }
