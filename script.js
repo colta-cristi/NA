@@ -2,7 +2,10 @@
 
 let team = document.querySelector('#team-a');
 let detailsText = document.querySelector('#details');
-// alert(nu.name);
+
+init('ch1', nu);
+init('ch2', nu);
+init('ch3', nu);
 
 team.addEventListener('click', function(e) {
 	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay')) return;
@@ -32,3 +35,12 @@ team.addEventListener('click', function(e) {
 	target.insertAdjacentHTML('beforebegin', tmp.innerHTML);
 	// target.classList.add('active');
 });
+
+function init(id, char) {
+	let charContainer = document.getElementById(id);
+	charContainer.querySelector('.avatar img').src = `images/${char.name}/${char.picture}`;
+	skills = charContainer.querySelectorAll('.skills img:not(.selected-skill)');
+	skills.forEach((item, index) => {
+		item.src = `images/${char.name}/${char.skills[index].name}.jpg`;
+	} );
+}

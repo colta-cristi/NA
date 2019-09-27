@@ -1,7 +1,22 @@
 let nu = {
-    name: 'John',
-    skill1: 'Clone',
-    skill2: 'tai',
-    skill3: 'ras',
-    skill4: 'retreat'
+    name: 'nu',
+    story: '',
+    picture: 'nu.jpg',
+    skills: [
+        {
+            name: 'clone',
+            description: 'make a clone'
+        }, 
+        {
+            name: 'tai',
+            description: 'use tai'
+        }, 
+        {
+            name: 'ras',
+            description: 'use ras'
+        }, 
+        {
+            name: 'retreat',
+            description: 'just run'
+    }]
 }
