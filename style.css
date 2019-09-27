@@ -226,7 +226,8 @@ h2.username {
 }
 
 #details img {
-	height: 14vh;
+	height: 135px;
+	width: 135px;
 	margin: 1vh;
 }
 

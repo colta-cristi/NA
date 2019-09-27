@@ -1,47 +1,77 @@
 // import {nu} from 'data/characters';
 
-let team = document.querySelector('#team-a');
-let detailsText = document.querySelector('#details');
+let team = document.querySelector('#team-a'),
+ch1 = document.querySelector('#ch1'),
+ch2 = document.querySelector('#ch2'),
+ch3 = document.querySelector('#ch3');
 
 // initialize character & skills data
 init('ch1', naruto);
 init('ch2', sakura);
 init('ch3', sasuke);
 
-team.addEventListener('click', function(e) {
-	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay')) return;
-	let target = e.target;
+ch1.addEventListener('click', toggleOverlay);
+ch2.addEventListener('click', toggleOverlay);
+ch3.addEventListener('click', toggleOverlay);
 
-	if (target.classList.contains('overlay')) {
-		target.remove();
-		console.log('removed');
-		return;
-	}
+ch1.addEventListener('click', updateDetailsContainer);
+ch2.addEventListener('click', updateDetailsContainer);
+ch3.addEventListener('click', updateDetailsContainer);
 
-	// create and style the overlay
-	let overlay = document.createElement('div');
-	overlay.style.height = target.height + 'px';
-	overlay.style.width = target.width + 'px';
-	overlay.style.backgroundColor = 'red';
-	overlay.style.position = 'absolute';
-	overlay.style.opacity = '0.3';
-
-
-
-	overlay.style.top = Number.parseInt(window.getComputedStyle(target).marginTop) + Math.abs(Number.parseInt(window.getComputedStyle(target.closest('.skills')).top)) + 'px';
-	overlay.style.left = target.offsetLeft + 'px';
-	overlay.classList.add('overlay');
-	var tmp = document.createElement("div");
-	tmp.appendChild(overlay);
-	target.insertAdjacentHTML('beforebegin', tmp.innerHTML);
-	// target.classList.add('active');
-});
 
 function init(id, char) {
 	let charContainer = document.getElementById(id);
+	charContainer.dataset.name = char.folderName;
 	charContainer.querySelector('.avatar img').src = `images/${char.folderName}/avatar.jpg`;
 	skills = charContainer.querySelectorAll('.skills img:not(.selected-skill)');
 	skills.forEach((item, index) => {
 		item.src = `images/${char.folderName}/${index+1}.jpg`;
 	} );
+}
+
+function toggleOverlay(e) {
+	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || e.target.classList.contains('selected-skill')) return;
+	let target = e.target;
+
+	setTimeout(function() {
+		
+
+		if (target.classList.contains('overlay')) {
+			target.remove();
+			// console.log('removed');
+			return;
+		}
+
+		// create and style the overlay
+		let overlay = document.createElement('div');
+		overlay.style.height = target.height + 'px';
+		overlay.style.width = target.width + 'px';
+		overlay.style.backgroundColor = 'red';
+		overlay.style.position = 'absolute';
+		overlay.style.opacity = '0.3';
+
+
+		overlay.style.top = Number.parseInt(window.getComputedStyle(target).marginTop) + Math.abs(Number.parseInt(window.getComputedStyle(target.closest('.skills')).top)) + 'px';
+		overlay.style.left = target.offsetLeft + 'px';
+		overlay.classList.add('overlay');
+		let tmp = document.createElement("div");
+		tmp.appendChild(overlay);
+		target.insertAdjacentHTML('beforebegin', tmp.innerHTML);
+	});
+}
+
+function updateDetailsContainer(e) {
+	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || e.target.classList.contains('selected-skill')) return;
+	let target;
+	if (e.target.classList.contains('overlay')) {
+		target = e.target.nextSibling;
+	} else {
+		target = e.target;
+	}
+	let container = document.querySelector('#details');
+	let skill = eval(e.currentTarget.dataset.name).skills[target.dataset.skill - 1];
+
+	container.querySelector('img').src = target.src;
+	container.querySelector('p.title').textContent = skill.name;
+	container.querySelector('p.description').textContent = skill.description;
 }
