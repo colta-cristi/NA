@@ -10,6 +10,10 @@ init('ch1', naruto);
 init('ch2', sakura);
 init('ch3', sasuke);
 
+init('ch4', sakura, true);
+init('ch5', sasuke, true);
+init('ch6', naruto, true);
+
 ch1.addEventListener('click', toggleOverlay);
 ch2.addEventListener('click', toggleOverlay);
 ch3.addEventListener('click', toggleOverlay);
@@ -19,10 +23,12 @@ ch2.addEventListener('click', updateDetailsContainer);
 ch3.addEventListener('click', updateDetailsContainer);
 
 
-function init(id, char) {
+function init(id, char, enemy=false) {
 	let charContainer = document.getElementById(id);
 	charContainer.dataset.name = char.folderName;
 	charContainer.querySelector('.avatar img').src = `images/${char.folderName}/avatar.jpg`;
+	if (enemy) return;
+
 	skills = charContainer.querySelectorAll('.skills img:not(.selected-skill)');
 	skills.forEach((item, index) => {
 		item.src = `images/${char.folderName}/${index+1}.jpg`;
@@ -34,8 +40,6 @@ function toggleOverlay(e) {
 	let target = e.target;
 
 	setTimeout(function() {
-		
-
 		if (target.classList.contains('overlay')) {
 			target.remove();
 			// console.log('removed');
@@ -50,10 +54,10 @@ function toggleOverlay(e) {
 		overlay.style.position = 'absolute';
 		overlay.style.opacity = '0.3';
 
-
-		overlay.style.top = Number.parseInt(window.getComputedStyle(target).marginTop) + Math.abs(Number.parseInt(window.getComputedStyle(target.closest('.skills')).top)) + 'px';
-		overlay.style.left = target.offsetLeft + 'px';
+		overlay.style.top = target.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(target).border) + 'px';
+		overlay.style.left = target.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(target).border) + 'px';
 		overlay.classList.add('overlay');
+
 		let tmp = document.createElement("div");
 		tmp.appendChild(overlay);
 		target.insertAdjacentHTML('beforebegin', tmp.innerHTML);

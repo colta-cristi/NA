@@ -3,7 +3,9 @@ body {
     -moz-user-select: none;
     -khtml-user-select: none;
     -webkit-user-select: none;
-    -o-user-select: none;
+	-o-user-select: none;
+	text-transform: uppercase;
+	font-family: "Trebuchet MS", arial, verdana, sans-serif;
 }
 
 img {
@@ -13,46 +15,53 @@ img {
 #board {
 	border: 1px solid blue;
 	margin: 1vh 12vw;
-	padding: 3vh 3vw 1vh 3vw;
-	height: 94vh;
-	width: 70vw;
+	padding: 0 30px;
+	height: 560px;
+	width: 770px;
 	background-image: url(images/placeholder.png);
     background-size: cover;
 }
 
 #header {
-	width: 100%;
 	display: flex;
 	justify-content: center;
 }
 
+#header .text {
+	margin-top: 25px;
+	font-weight: bold;
+}
+
 #player-one, #player-two {
 	display: inherit;
+	font-family: monospace;
+	margin: 0 10px;
 }
 
 .player-avatar {
-	height: 100px;
-	width: 100px;
+	height: 50px;
+	width: 50px;
 	margin: 10px;
 }
 
 .center {
 	display: flex;
-	width: 50vw;
-	justify-content: space-between;
 }
 
 #next-round {
-	width: 15vw;
+	width: 18vw;
 	text-align: center;
 }
 
-#next-round h4 {
+#next-round h3 {
 	margin: 5px;
+	font-family: monospace;
 }
 
-h2.username {
+span.username {
 	color: #cf0804;
+	font-size: 20px;
+	display: block;
 }
 
 #timer-container {
@@ -72,6 +81,7 @@ h2.username {
 	/* border: 1px solid pink; */
 	justify-content: space-between;
 	margin-top: 5px;
+	text-transform: initial;
 }
 
 #taijutsu, #bloodline, #ninjutsu, #genjutsu {
@@ -103,24 +113,14 @@ h2.username {
 	/* border: 1px solid red; */
 }
 
-#team-a .char {
-	height: 20vh;
-	width: 60vw;
-	/* border: 1px solid black; */
-}
-
-#team-b .char {
-	height: 20vh;
-	width: 15vw;
-	/* border: 1px solid black; */
+#ch1, #ch2, #ch3, #ch4, #ch5, #ch6 {
+	margin-bottom: 10px;
 }
 
 .avatar {
-	height: 100px;
-	width: 100px;
+	height: 75px;
+	width: 75px;
 	display: inline-block;
-	margin: 10px;
-	margin-right: 0;
 }
 
 .avatar img {
@@ -140,17 +140,14 @@ h2.username {
 	border: 1px solid red;
 	border-left: 0;
 	background-color: beige;
-	position: relative;
-	top: -7px;
-	margin-right: 20px;
 }
 
 .skills img , .char li {
 	list-style-type: none;
 	background-color: #ccc;
-	height: 70px;
-	width: 70px;
-	margin: 5px;
+	height: 55px;
+	width: 55px;
+	margin: 5px 2.5px;
 	display: inline-block;
 	text-align: center;
 	font-size: 70px;
@@ -175,8 +172,8 @@ h2.username {
 #footer {
 	display: flex;
 	/* border: 1px solid black; */
-	height: 18vh;
 	box-sizing: border-box;
+	margin-top: 10px;
 }
 
 #menu {
@@ -202,7 +199,6 @@ h2.username {
 	border-width: 4px 0;
 	height: 20%;
 	border-radius: 5px;
-	text-transform: uppercase;
 	line-height: 28px;
 	text-indent: 15px;
 	box-shadow: 0 0 1px 1px black;
@@ -226,11 +222,12 @@ h2.username {
 }
 
 #details img {
-	height: 135px;
-	width: 135px;
-	margin: 1vh;
+	height: 85px;
+	width: 85px;
+	margin: 5px;
 }
 
 #details .text {
 	padding: 0 15px;
+	font-size: 11px;
 }
