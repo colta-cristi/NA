@@ -84,33 +84,32 @@ span.username {
 	text-transform: initial;
 }
 
-#taijutsu, #bloodline, #ninjutsu, #genjutsu {
+.taijutsu, .bloodline, .ninjutsu, .genjutsu, .any {
 	height: 10px;
 	width: 10px;
-	border: 2px solid black;
+	border: 1px solid black;
 	display: inline-block;
 }
 
-#taijutsu {
+.taijutsu {
 	background-color: green;
 }
-#bloodline {
+.bloodline {
 	background-color: red;
 }
-#ninjutsu {
-	background-color: blue;
+.ninjutsu {
+	background-color: #34cfeb;
 }
-#genjutsu {
+.genjutsu {
 	background-color: white;
+}
+.any {
+	background-color: black;
 }
 
 #teams {
 	display: flex;
 	justify-content: space-between;
-}
-
-#team-a, #team-b {
-	/* border: 1px solid red; */
 }
 
 #ch1, #ch2, #ch3, #ch4, #ch5, #ch6 {
@@ -151,21 +150,21 @@ span.username {
 	display: inline-block;
 	text-align: center;
 	font-size: 70px;
+	opacity: 0.5;
+	z-index: 0;
 	color: #aaa;
 }
 
-.selected-skill {
+.skills .selected-skill {
 	padding: 0;
-	margin-right: 15px !important;
+	margin-right: 15px;
+	opacity: 1;
 }
 
-#overlay1 {
-	height: 80px;
-	width: 80px;
-	background-color: yellow;
+.overlay {
+	background-color: red;
     position: absolute;
-    top: 5px;
-    left: 5px;
+	z-index: 1;
     opacity: 0.3;
 }
 
@@ -188,7 +187,6 @@ span.username {
 }
 
 #placeholder {
-	/* flex-grow: 2; */
 	flex-basis: 13vw;
 }
 
@@ -216,7 +214,7 @@ span.username {
 	display: flex;
 	flex-basis: 66vw;
 	/* flex-grow: 10; */
-	/* border: 1px solid orange; */
+	border: 1px solid orange;
 	background-color: beige;
 	border: 6px solid #cf0804;
 }
@@ -230,4 +228,10 @@ span.username {
 #details .text {
 	padding: 0 15px;
 	font-size: 11px;
+}
+
+#details .title {
+	font-size: 14px;
+	color: #cf0804;
+	margin-bottom: 5px;
 }

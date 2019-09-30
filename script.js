@@ -22,6 +22,10 @@ ch1.addEventListener('click', updateDetailsContainer);
 ch2.addEventListener('click', updateDetailsContainer);
 ch3.addEventListener('click', updateDetailsContainer);
 
+ch4.addEventListener('click', updateDetailsContainer);
+ch5.addEventListener('click', updateDetailsContainer);
+ch6.addEventListener('click', updateDetailsContainer);
+
 
 function init(id, char, enemy=false) {
 	let charContainer = document.getElementById(id);
@@ -36,13 +40,16 @@ function init(id, char, enemy=false) {
 }
 
 function toggleOverlay(e) {
-	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || e.target.classList.contains('selected-skill')) return;
+	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || 
+		e.target.classList.contains('selected-skill') ||
+		e.target.closest('.avatar')) 
+			return;
+
 	let target = e.target;
 
 	setTimeout(function() {
 		if (target.classList.contains('overlay')) {
 			target.remove();
-			// console.log('removed');
 			return;
 		}
 
@@ -50,9 +57,6 @@ function toggleOverlay(e) {
 		let overlay = document.createElement('div');
 		overlay.style.height = target.height + 'px';
 		overlay.style.width = target.width + 'px';
-		overlay.style.backgroundColor = 'red';
-		overlay.style.position = 'absolute';
-		overlay.style.opacity = '0.3';
 
 		overlay.style.top = target.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(target).border) + 'px';
 		overlay.style.left = target.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(target).border) + 'px';
@@ -65,17 +69,48 @@ function toggleOverlay(e) {
 }
 
 function updateDetailsContainer(e) {
-	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || e.target.classList.contains('selected-skill')) return;
-	let target;
+	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || 
+		e.target.classList.contains('selected-skill')) 
+			return;
+
+	let target, 
+		container = document.querySelector('#details'),
+		char = eval(e.currentTarget.dataset.name),
+		title = '', 
+		description = '',
+		classes = '',
+		cooldown = '',
+		skillCost = '';
+
 	if (e.target.classList.contains('overlay')) {
 		target = e.target.nextSibling;
 	} else {
 		target = e.target;
 	}
-	let container = document.querySelector('#details');
-	let skill = eval(e.currentTarget.dataset.name).skills[target.dataset.skill - 1];
+
+	if (e.target.closest('.avatar')) {
+		title = char.name;
+		description = char.story;
+	} else {
+		let skill = char.skills[target.dataset.skill - 1],
+			chakraIcons = '';
+
+		title = skill.name;
+		description = skill.description;
+		classes = `classes: ${skill.classes}`;
+		cooldown = `cooldown: ${skill.cooldown}`;
+
+		skill.chakra.forEach((i) => {
+			chakraIcons += `<div class="${i}"></div>`;
+		});
+
+		skillCost = `chakra: ${chakraIcons}`;
+	}
 
 	container.querySelector('img').src = target.src;
-	container.querySelector('p.title').textContent = skill.name;
-	container.querySelector('p.description').textContent = skill.description;
+	container.querySelector('#details .title').textContent = title;
+	container.querySelector('#details .description').textContent = description;
+	container.querySelector('#details #skill-cost').innerHTML = skillCost;
+	container.querySelector('#details #classes').textContent = classes;
+	container.querySelector('#details #cooldown').textContent = cooldown;
 }
