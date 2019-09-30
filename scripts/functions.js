@@ -1,32 +1,3 @@
-// import {nu} from 'data/characters';
-
-let team = document.querySelector('#team-a'),
-ch1 = document.querySelector('#ch1'),
-ch2 = document.querySelector('#ch2'),
-ch3 = document.querySelector('#ch3');
-
-// initialize character & skills data
-init('ch1', naruto);
-init('ch2', sakura);
-init('ch3', sasuke);
-
-init('ch4', sakura, true);
-init('ch5', sasuke, true);
-init('ch6', naruto, true);
-
-ch1.addEventListener('click', toggleOverlay);
-ch2.addEventListener('click', toggleOverlay);
-ch3.addEventListener('click', toggleOverlay);
-
-ch1.addEventListener('click', updateDetailsContainer);
-ch2.addEventListener('click', updateDetailsContainer);
-ch3.addEventListener('click', updateDetailsContainer);
-
-ch4.addEventListener('click', updateDetailsContainer);
-ch5.addEventListener('click', updateDetailsContainer);
-ch6.addEventListener('click', updateDetailsContainer);
-
-
 function init(id, char, enemy=false) {
 	let charContainer = document.getElementById(id);
 	charContainer.dataset.name = char.folderName;
@@ -37,6 +8,42 @@ function init(id, char, enemy=false) {
 	skills.forEach((item, index) => {
 		item.src = `images/${char.folderName}/${index+1}.jpg`;
 	} );
+}
+
+function updateTimer() {
+    let timer = document.getElementById('timer-bar'),
+        timerContainer = document.getElementById('timer-container');
+        
+        // timerWidth = Number.parseInt(window.getComputedStyle(timer).width);
+        let secondsLeft = 60;
+
+    setInterval( () => {
+        let widthPercentage = Number.parseFloat(window.getComputedStyle(timer).width) * 100 / 
+            Number.parseFloat(window.getComputedStyle(timerContainer).width),
+            secondsPerRound = 10,
+            step = 100 / secondsPerRound;
+        if (widthPercentage - step <= 0) {
+            timer.style.width = 100 + '%';
+            secondsLeft = 60;
+            getChakra();
+        }
+        timer.style.width = widthPercentage - step + '%';
+    }, 1000);
+}
+
+function getChakra(charactersAlive = 3) {
+    let chakraTypes = ['taijutsu', 'ninjutsu', 'bloodline', 'genjutsu'],
+        chakraRewarded = [];
+
+    for (let i = 0; i < charactersAlive; i++)
+        chakraRewarded.push(chakraTypes[rand(1, 4) - 1]);
+
+        console.log(chakraRewarded);
+}
+
+function rand( lowest, highest){
+    var adjustedHigh = (highest - lowest) + 1;       
+    return Math.floor(Math.random()*adjustedHigh) + parseFloat(lowest);
 }
 
 function toggleOverlay(e) {
