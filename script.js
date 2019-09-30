@@ -104,7 +104,7 @@ function updateDetailsContainer(e) {
 			chakraIcons += `<div class="${i}"></div>`;
 		});
 
-		skillCost = `chakra: ${chakraIcons}`;
+		skillCost = `chakra:${chakraIcons}`;
 	}
 
 	container.querySelector('img').src = target.src;
