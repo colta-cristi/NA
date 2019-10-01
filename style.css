@@ -83,26 +83,30 @@ span.username {
 	text-transform: initial;
 }
 
-.taijutsu, .bloodline, .ninjutsu, .genjutsu, .any {
+.chakra .square {
 	height: 10px;
 	width: 10px;
 	border: 1px solid black;
 	display: inline-block;
 }
 
-.taijutsu {
+.chakra {
+	display: inline;
+}
+
+.taijutsu .square {
 	background-color: #09F236;
 }
-.bloodline {
+.bloodline .square {
 	background-color: #E90306;
 }
-.ninjutsu {
+.ninjutsu .square {
 	background-color: #0795C5;
 }
-.genjutsu {
+.genjutsu .square {
 	background-color: white;
 }
-.any {
+.any .square {
 	background-color: #010007;
 }
 
@@ -247,7 +251,7 @@ span.username {
 }
 
 #skill-cost div {
-	margin-left: 5px;
+	margin-left: 2.5px;
 }
 
 .text .description {
