@@ -1,17 +1,23 @@
-var chakraTypes = ['taijutsu', 'bloodline', 'ninjutsu', 'genjutsu', 'any'];
+var chakraTypes = ['taijutsu', 'bloodline', 'ninjutsu', 'genjutsu', 'any'],
+	ch1, ch2, ch3, ch4, ch5, ch6;
 
-function startGame() {
+function startGame(char1, char2, char3, char4, char5, char6) {
 	// initialize character & skills data
-	init('ch1', naruto);
-	init('ch2', sakura);
-	init('ch3', sasuke);
 
-	init('ch4', sakura, true);
-	init('ch5', sasuke, true);
-	init('ch6', naruto, true);
+	ch1 = char1, ch2 = char2, ch3 = char3, ch4 = char4, ch5 = char5, ch6 = char6;
+	
+	init('ch1', ch1);
+	init('ch2', ch2);
+	init('ch3', ch3);
+
+	init('ch4', ch4, true);
+	init('ch5', ch5, true);
+	init('ch6', ch6, true);
 
 	let chakra = addChakra();
-	activateSkills(chakra);
+	activateSkills(ch1, chakra);
+	activateSkills(ch2, chakra);
+	activateSkills(ch3, chakra);
 }
 
 function init(id, char, enemy=false) {
@@ -28,7 +34,7 @@ function init(id, char, enemy=false) {
 	} );
 }
 
-function updateTimer() {
+function updateTimer(secondsPerRound = 60) {
     let timer = document.getElementById('timer-bar'),
         timerContainer = document.getElementById('timer-container');
         
@@ -38,7 +44,6 @@ function updateTimer() {
     setInterval( () => {
         let widthPercentage = Number.parseFloat(window.getComputedStyle(timer).width) * 100 / 
             Number.parseFloat(window.getComputedStyle(timerContainer).width),
-            secondsPerRound = 10,
 			step = 100 / secondsPerRound;
 			
 		// Change round
@@ -48,7 +53,9 @@ function updateTimer() {
 			
 			// TODO: get charactersAlive
 			let chakra = addChakra();
-			activateSkills(chakra);
+			activateSkills(ch1, chakra);
+			activateSkills(ch2, chakra);
+			activateSkills(ch3, chakra);
         }
         timer.style.width = widthPercentage - step + '%';
     }, 1000);
@@ -80,45 +87,25 @@ function addChakra(charactersAlive = 3) {
 		return chakraCounters;
 }
 
-function activateSkills(chakra) {
-	let HtmlSkills = document.querySelectorAll('.skills img:not(.selected-skill)'),
-		ch1 = eval(document.getElementById('ch1').dataset.name),
-		ch2 = eval(document.getElementById('ch2').dataset.name),
-		ch3 = eval(document.getElementById('ch3').dataset.name);
+function activateSkills(character, chakra) {
+	character.skills.forEach(function(skill) {
+		let canActivate = true,
+			chakraNeeded = chakraTypes.filter(type => skill.chakra[type] > 0);
 
-		// console.log(chakra);
 
-		ch3.skills.forEach(function(skill) {
-			// console.log(skill.name);
-			// if (skill.name == "Lion Combo") return; // check from chidori
-			let canActivate = true;
-			// ninjutsu, ninjutsu, any
-			chakraTypes.forEach((type) => {
-				if (skill.chakra[type] == 0) {
-					canActivate = false;
-					return;
-				}
-				if (chakra[type] >= skill.chakra[type] && canActivate) {
-					debugger;
-					canActivate = true;
-					document.querySelector(`.skills img[alt="${skill.name}"]`).style.opacity = 1;
-				}
-			});
+		chakraNeeded.forEach((type) => {
+			if (skill.chakra[type] > chakra[type]) {
+				canActivate = false;
+				return;
+			}
+			if (chakra[type] >= skill.chakra[type] && canActivate) {
+				debugger;
+				canActivate = true;
+				document.querySelector(`.skills img[alt="${skill.name}"]`).style.opacity = 1;
+			}
 		});
-
-		ch2.skills.forEach((skill) => {
-			// console.log(skill.chakra);
-		});
-
-		ch3.skills.forEach((skill) => {
-			// console.log(skill.chakra);
-		});
-
-	// skills.forEach((skill) => {
-	// 	console.log(skill.style.opacity = 1);
-	// });
-
-	// skills.forEach((i) => console.log(i));
+		// console.log(skill.name + ': ' + chakraNeeded + '; Can Activate: ' + canActivate);
+	});
 }
 
 function rand( lowest, highest){

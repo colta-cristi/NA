@@ -9,28 +9,28 @@ let sakura = {
             name: 'KO Punch',
             description: "Sakura punches one enemy with all her strength dealing 20 damage to them and stunning their physical or mental skills for 1 turn. During 'Inner Sakura', KO Punch deals 10 additional damage.",
             cooldown: 0,
-            chakra: {'taijutsu': 1, 'bloodline': 0, 'ninjutsu': 0, 'any': 0},
+            chakra: {'taijutsu': 1, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 0},
             classes: 'Physical, Instant, Melee'
         },
         {
             name: 'Cure',
             description: 'Using basic healing techniques Sakura heals herself or one ally for 25 health.',
             cooldown: 0,
-            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 1, 'any': 0},
+            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 1, 'genjutsu': 0, 'any': 0},
             classes: 'Chakra, Instant'
         },
         {
             name: 'Inner Sakura',
             description: "Sakura's inner self surfaces and urges her on. For 4 turns, Sakura will gain 10 points of damage reduction and will ignore all stun effects. During this time 'KO Punch' will deal 10 additional damage.",
             cooldown: 4,
-            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'any': 1},
+            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Mental, Instant, Unique'
         },
         {
             name: 'Sakura Hide',
             description: 'This skill makes Haruno Sakura invulnerable for 1 turn.',
             cooldown: 4,
-            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'any': 1},
+            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Chakra, Instant'
         }
     ]
@@ -45,28 +45,28 @@ naruto = {
             name: 'Uzumaki Naruto Combo',
             description: "Naruto's version of the Lion Combo. This skill deals 20 damage to one enemy. During 'Shadow Clones' this skill will deal 10 additional damage.",
             cooldown: 0,
-            chakra: {'taijutsu': 1, 'bloodline': 0, 'ninjutsu': 0, 'any': 0},
+            chakra: {'taijutsu': 1, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 0},
             classes: 'Physical, Instant, Melee'
         },
         {
             name: 'Rasengan',
             description: "Naruto hits one enemy with a ball of chakra dealing 45 damage to them and stunning their skills for 1 turn. This skill requires 'Shadow Clones'.",
             cooldown: 1,
-            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 1, 'any': 1},
+            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 1, 'genjutsu': 0, 'any': 1},
             classes: 'Chakra, Instant, Melee'
         },
         {
             name: 'Shadow Clones',
             description: "Naruto creates multiple shadow clones hiding his true self. Naruto gains 15 points of damage reduction for 4 turns. During this time 'Uzumaki Naruto Combo' will deal 10 additional damage and 'Rasengan' can be used.",
             cooldown: 4,
-            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'any': 1},
+            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Chakra, Instant'
         },
         {
             name: "Sexy Technique",
             description: "This skill makes Uzumaki Naruto invulnerable for 1 turn.",
             cooldown: 4,
-            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'any': 1},
+            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Chakra, Instant'
         }
     ]
@@ -87,28 +87,28 @@ sasuke = {
             name: 'Lion Combo',
             description: "Copying a taijutsu combo that Lee used on him, Sasuke deals 30 damage to one enemy. This skill will deal an additional 15 damage to an enemy affected by 'Sharingan'.",
             cooldown: 0,
-            chakra: {'taijutsu': 1, 'bloodline': 0, 'ninjutsu': 0, 'any': 1},
+            chakra: {'taijutsu': 1, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Physical, Instant, Melee'
         },
         {
             name: 'Chidori',
             description: "Using a lightning element attack jutsu, Sasuke deals 30 piercing damage to one enemy. This skill will deal an additional 25 damage to an enemy affected by 'Sharingan'.",
             cooldown: 1,
-            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 2, 'any': 1},
+            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 2, 'genjutsu': 0, 'any': 1},
             classes: 'Chakra, Instant, Melee'
         },
         {
             name: 'Sharingan',
             description: "Sasuke targets one enemy. For 4 turns, Sasuke will gain 15 points of damage reduction. During this time, that enemy will be unable to reduce damage or become invulnerable.* This will end if Sasuke dies.",
             cooldown: 4,
-            chakra: {'taijutsu': 0, 'bloodline': 1, 'ninjutsu': 0, 'any': 0},
+            chakra: {'taijutsu': 0, 'bloodline': 1, 'ninjutsu': 0, 'genjutsu': 0, 'any': 0},
             classes: 'Mental, Instant, Unique, Ranged*'
         },
         {
             name: 'Swift Block',
             description: "This skill makes Uchiha Sasuke invulnerable for 1 turn.",
             cooldown: 4,
-            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'any': 1},
+            chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Physical, Instant'
         }
     ]
@@ -123,28 +123,28 @@ sasuke = {
 //             name: '',
 //             description: "",
 //             cooldown: ,
-//             chakra: [''],
+//             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 0},
 //             classes: ''
 //         },
 //         {
 //             name: '',
 //             description: "",
 //             cooldown: ,
-//             chakra: [''],
+//             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 0},
 //             classes: ''
 //         },
 //         {
 //             name: '',
 //             description: "",
 //             cooldown: ,
-//             chakra: [''],
+//             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 0},
 //             classes: ''
 //         },
 //         {
 //             name: '',
 //             description: "",
 //             cooldown: ,
-//             chakra: [''],
+//             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 0},
 //             classes: ''
 //         }
 //     ]
