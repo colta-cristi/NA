@@ -1,5 +1,6 @@
 var chakraTypes = ['taijutsu', 'bloodline', 'ninjutsu', 'genjutsu', 'any'],
-	ch1, ch2, ch3, ch4, ch5, ch6;
+	ch1, ch2, ch3, ch4, ch5, ch6,
+	lastSkillClicked;
 
 function startGame(char1, char2, char3, char4, char5, char6) {
 	// initialize character & skills data
@@ -34,7 +35,7 @@ function init(id, char, enemy=false) {
 	} );
 }
 
-function updateTimer(secondsPerRound = 60) {
+function updateTimer(secondsPerRound = 10) {
     let timer = document.getElementById('timer-bar'),
         timerContainer = document.getElementById('timer-container');
         
@@ -99,7 +100,6 @@ function activateSkills(character, chakra) {
 				return;
 			}
 			if (chakra[type] >= skill.chakra[type] && canActivate) {
-				debugger;
 				canActivate = true;
 				document.querySelector(`.skills img[alt="${skill.name}"]`).style.opacity = 1;
 			}
@@ -113,33 +113,78 @@ function rand( lowest, highest){
     return Math.floor(Math.random()*adjustedHigh) + parseFloat(lowest);
 }
 
+function removeOverlay(target, charactersTargeted) {
+	if (target.classList.contains('overlay')) {
+		target.remove();
+		charactersTargeted.forEach((enemy) => {
+			if (enemy.previousElementSibling.classList.contains('overlay')) {
+				enemy.previousElementSibling.remove();
+			}
+		});
+
+		return;
+	}
+}
+
 function toggleOverlay(e) {
 	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || 
 		e.target.classList.contains('selected-skill') ||
 		e.target.closest('.avatar') ||
-		e.target.style.opacity != 1)
+		!e.target.classList.contains('overlay') && e.target.style.opacity != 1)
 			return;
 
-	let target = e.target;
+	let target = e.target,
+		character = eval(e.currentTarget.dataset.name),
+		enemies = document.querySelectorAll('#team-b .avatar img'),
+		charactersTargeted = enemies;
 
 	setTimeout(function() {
-		if (target.classList.contains('overlay')) {
-			target.remove();
-			return;
-		}
+		// if (target.classList.contains('overlay')) {
+		// 	target.remove();
+		// 	charactersTargeted.forEach((enemy) => {
+		// 		if (enemy.previousElementSibling.classList.contains('overlay')) {
+		// 			enemy.previousElementSibling.remove();
+		// 		}
+		// 	});
+
+		// 	return;
+		// }
+
+		removeOverlay(target, charactersTargeted);
+
+		console.log(lastSkillClicked);
+
+		let skillClicked = character.skills[target.dataset.skill - 1];
+		lastSkillClicked = skillClicked;
+
+		console.log(skillClicked.targets);
 
 		// create and style the overlay
-		let overlay = document.createElement('div');
-		overlay.style.height = target.height + 'px';
-		overlay.style.width = target.width + 'px';
+		let skillOverlay = document.createElement('div');
+		skillOverlay.style.height = target.height + 'px';
+		skillOverlay.style.width = target.width + 'px';
 
-		overlay.style.top = target.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(target).border) + 'px';
-		overlay.style.left = target.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(target).border) + 'px';
-		overlay.classList.add('overlay');
+		skillOverlay.style.top = target.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(target).border) + 'px';
+		skillOverlay.style.left = target.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(target).border) + 'px';
+		skillOverlay.classList.add('overlay');
 
 		let tmp = document.createElement("div");
-		tmp.appendChild(overlay);
+		tmp.appendChild(skillOverlay);
 		target.insertAdjacentHTML('beforebegin', tmp.innerHTML);
+
+		enemies.forEach((enemy) => {
+			overlay = document.createElement('div');
+			overlay.style.height = enemy.height + 'px';
+			overlay.style.width = enemy.width + 'px';
+
+			overlay.style.top = enemy.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(enemy).border) + 'px';
+			overlay.style.left = enemy.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(enemy).border) + 'px';
+			overlay.classList.add('overlay');
+
+			let tmp2 = document.createElement("div");
+			tmp2.appendChild(overlay);
+			enemy.insertAdjacentHTML('beforebegin', tmp2.innerHTML);
+		});
 	});
 }
 
