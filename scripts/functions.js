@@ -113,18 +113,7 @@ function rand( lowest, highest){
     return Math.floor(Math.random()*adjustedHigh) + parseFloat(lowest);
 }
 
-function removeOverlay(target, charactersTargeted) {
-	if (target.classList.contains('overlay')) {
-		target.remove();
-		charactersTargeted.forEach((enemy) => {
-			if (enemy.previousElementSibling.classList.contains('overlay')) {
-				enemy.previousElementSibling.remove();
-			}
-		});
 
-		return;
-	}
-}
 
 function toggleOverlay(e) {
 	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || 
@@ -133,31 +122,29 @@ function toggleOverlay(e) {
 		!e.target.classList.contains('overlay') && e.target.style.opacity != 1)
 			return;
 
-	let target = e.target,
+	let target = e.target.tagName == 'IMG' ? e.target : e.target.nextElementSibling,
+		allOverlays = document.querySelectorAll('.overlay'),
 		character = eval(e.currentTarget.dataset.name),
 		enemies = document.querySelectorAll('#team-b .avatar img'),
 		charactersTargeted = enemies;
 
 	setTimeout(function() {
-		// if (target.classList.contains('overlay')) {
-		// 	target.remove();
-		// 	charactersTargeted.forEach((enemy) => {
-		// 		if (enemy.previousElementSibling.classList.contains('overlay')) {
-		// 			enemy.previousElementSibling.remove();
-		// 		}
-		// 	});
-
-		// 	return;
-		// }
-
-		removeOverlay(target, charactersTargeted);
-
-		console.log(lastSkillClicked);
+		// console.log(lastSkillClicked);
 
 		let skillClicked = character.skills[target.dataset.skill - 1];
+		if (lastSkillClicked) {
+			if (lastSkillClicked.name == skillClicked.name) {
+				allOverlays.forEach((overlay) => overlay.remove());
+				lastSkillClicked = '';
+				return;
+			}
+		}
+
 		lastSkillClicked = skillClicked;
 
-		console.log(skillClicked.targets);
+		allOverlays.forEach((overlay) => overlay.remove());
+
+		// console.log(skillClicked.targets);
 
 		// create and style the overlay
 		let skillOverlay = document.createElement('div');
