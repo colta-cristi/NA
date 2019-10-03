@@ -4,7 +4,6 @@ var chakraTypes = ['taijutsu', 'bloodline', 'ninjutsu', 'genjutsu', 'any'],
 
 function startGame(char1, char2, char3, char4, char5, char6) {
 	// initialize character & skills data
-
 	ch1 = char1, ch2 = char2, ch3 = char3, ch4 = char4, ch5 = char5, ch6 = char6;
 	
 	init('ch1', ch1);
@@ -38,9 +37,6 @@ function init(id, char, enemy=false) {
 function updateTimer(secondsPerRound = 10) {
     let timer = document.getElementById('timer-bar'),
         timerContainer = document.getElementById('timer-container');
-        
-        // timerWidth = Number.parseInt(window.getComputedStyle(timer).width);
-        let secondsLeft = 60;
 
     setInterval( () => {
         let widthPercentage = Number.parseFloat(window.getComputedStyle(timer).width) * 100 / 
@@ -104,7 +100,6 @@ function activateSkills(character, chakra) {
 				document.querySelector(`.skills img[alt="${skill.name}"]`).style.opacity = 1;
 			}
 		});
-		// console.log(skill.name + ': ' + chakraNeeded + '; Can Activate: ' + canActivate);
 	});
 }
 
@@ -125,11 +120,14 @@ function toggleOverlay(e) {
 	let target = e.target.tagName == 'IMG' ? e.target : e.target.nextElementSibling,
 		allOverlays = document.querySelectorAll('.overlay'),
 		character = eval(e.currentTarget.dataset.name),
-		enemies = document.querySelectorAll('#team-b .avatar img'),
-		charactersTargeted = enemies;
+		htmlEnemies = document.querySelectorAll('#team-b .avatar img'),
+		htmlAllies = document.querySelectorAll('#team-a .avatar img'),
+		htmlAlliesExceptSelf = document.querySelectorAll(`#team-a div:not([data-name="${e.currentTarget.dataset.name}"]) .avatar img`),
+		htmlAll = document.querySelectorAll('#teams'),
+		htmlSelf = document.querySelector(`#team-a div[data-name="${e.currentTarget.dataset.name}"] .avatar img`),
+		charactersTargeted = '';
 
 	setTimeout(function() {
-		// console.log(lastSkillClicked);
 
 		let skillClicked = character.skills[target.dataset.skill - 1];
 		if (lastSkillClicked) {
@@ -144,8 +142,6 @@ function toggleOverlay(e) {
 
 		allOverlays.forEach((overlay) => overlay.remove());
 
-		// console.log(skillClicked.targets);
-
 		// create and style the overlay
 		let skillOverlay = document.createElement('div');
 		skillOverlay.style.height = target.height + 'px';
@@ -159,7 +155,40 @@ function toggleOverlay(e) {
 		tmp.appendChild(skillOverlay);
 		target.insertAdjacentHTML('beforebegin', tmp.innerHTML);
 
-		enemies.forEach((enemy) => {
+		if (skillClicked.targets.includes('ally')) {
+			charactersTargeted = htmlAlliesExceptSelf;
+		}
+
+		if (skillClicked.targets.includes('enemy')) {
+			if (skillClicked.targets.includes('ally')) {
+				charactersTargeted = htmlAll;
+			} else {
+				charactersTargeted = htmlEnemies;
+			}
+		}
+
+		if (skillClicked.targets.includes('self')) {
+			if (skillClicked.targets.includes('ally')) {
+				charactersTargeted = htmlAllies;
+			} else {
+				charactersTargeted = htmlSelf;
+				overlay = document.createElement('div');
+				overlay.style.height = charactersTargeted.height + 'px';
+				overlay.style.width = charactersTargeted.width + 'px';
+
+				overlay.style.top = charactersTargeted.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(charactersTargeted).border) + 'px';
+				overlay.style.left = charactersTargeted.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(charactersTargeted).border) + 'px';
+				overlay.classList.add('overlay');
+
+				let tmp2 = document.createElement("div");
+				tmp2.appendChild(overlay);
+				charactersTargeted.insertAdjacentHTML('beforebegin', tmp2.innerHTML);
+
+				return;
+			}
+		}
+
+		charactersTargeted.forEach((enemy) => {
 			overlay = document.createElement('div');
 			overlay.style.height = enemy.height + 'px';
 			overlay.style.width = enemy.width + 'px';
