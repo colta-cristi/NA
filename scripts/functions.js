@@ -1,6 +1,6 @@
 var chakraTypes = ['taijutsu', 'bloodline', 'ninjutsu', 'genjutsu', 'any'],
 	ch1, ch2, ch3, ch4, ch5, ch6,
-	lastSkillClicked;
+	lastClicked;
 
 function startGame(char1, char2, char3, char4, char5, char6) {
 	// initialize character & skills data
@@ -128,21 +128,22 @@ function toggleOverlay(e) {
 		charactersTargeted = '';
 
 	setTimeout(function() {
-
 		let skillClicked = character.skills[target.dataset.skill - 1];
-		if (lastSkillClicked) {
-			if (lastSkillClicked.name == skillClicked.name) {
+		if (lastClicked) {
+			if (lastClicked.name == skillClicked.name) {
+				// remove overlays if I click the same skill again
 				allOverlays.forEach((overlay) => overlay.remove());
-				lastSkillClicked = '';
+				lastClicked = '';
 				return;
 			}
 		}
 
-		lastSkillClicked = skillClicked;
+		lastClicked = skillClicked;
 
+		// remove overlays if I select another skill
 		allOverlays.forEach((overlay) => overlay.remove());
 
-		// create and style the overlay
+		// create and style the overlays
 		let skillOverlay = document.createElement('div');
 		skillOverlay.style.height = target.height + 'px';
 		skillOverlay.style.width = target.width + 'px';
@@ -196,10 +197,17 @@ function toggleOverlay(e) {
 			overlay.style.top = enemy.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(enemy).border) + 'px';
 			overlay.style.left = enemy.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(enemy).border) + 'px';
 			overlay.classList.add('overlay');
+			overlay.classList.add('character');
 
 			let tmp2 = document.createElement("div");
 			tmp2.appendChild(overlay);
 			enemy.insertAdjacentHTML('beforebegin', tmp2.innerHTML);
+		});
+
+		let characterOverlays = document.querySelectorAll('#teams .avatar .overlay');
+
+		characterOverlays.forEach((ch) => {
+			ch.addEventListener('click', applySkill);
 		});
 	});
 }
@@ -219,6 +227,9 @@ function updateDetailsContainer(e) {
 		skillCost = '';
 
 	if (e.target.classList.contains('overlay')) {
+		if (e.target.classList.contains('character')) {
+			return;
+		}
 		target = e.target.nextSibling;
 	} else {
 		target = e.target;
@@ -252,4 +263,13 @@ function updateDetailsContainer(e) {
 	container.querySelector('#details #skill-cost').innerHTML = skillCost;
 	container.querySelector('#details #classes').textContent = classes;
 	container.querySelector('#details #cooldown').textContent = cooldown;
+}
+
+function applySkill(e) {
+	let allOverlays = document.querySelectorAll('.overlay');
+
+	// TODO: add skill icon near character avatar
+	allOverlays.forEach((overlay) => overlay.remove());
+	lastClicked = '';
+	e.stopPropagation();
 }
