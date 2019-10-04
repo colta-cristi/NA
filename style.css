@@ -130,10 +130,27 @@ span.username {
 	/* height: 84%; */
 }
 
-.health {
+.health-bar-container {
 	text-align: center;
-	background-color: #3CE041;
+	width: 75px;
+	background-color: #fff;
 	border: 1px solid black;
+	position: relative;
+	box-sizing: border-box;
+}
+
+.health-bar-remaining {
+	background-color: #3CE041;
+	transition: width 2s;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+}
+
+.health-text {
+	position: relative;
+	z-index: 1;
 }
 
 .skills {

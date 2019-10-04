@@ -25,6 +25,8 @@ function init(id, char, enemy=false) {
 	charContainer.dataset.name = char.folderName;
 	charContainer.querySelector('.avatar img').src = `images/${char.folderName}/avatar.jpg`;
 
+	char.hp = 100;
+
 	if (enemy) return;
 
 	skills = charContainer.querySelectorAll('.skills img:not(.selected-skill)');
@@ -108,8 +110,6 @@ function rand( lowest, highest){
     return Math.floor(Math.random()*adjustedHigh) + parseFloat(lowest);
 }
 
-
-
 function toggleOverlay(e) {
 	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || 
 		e.target.classList.contains('selected-skill') ||
@@ -120,10 +120,10 @@ function toggleOverlay(e) {
 	let target = e.target.tagName == 'IMG' ? e.target : e.target.nextElementSibling,
 		allOverlays = document.querySelectorAll('.overlay'),
 		character = eval(e.currentTarget.dataset.name),
-		htmlEnemies = document.querySelectorAll('#team-b .avatar img'),
-		htmlAllies = document.querySelectorAll('#team-a .avatar img'),
-		htmlAlliesExceptSelf = document.querySelectorAll(`#team-a div:not([data-name="${e.currentTarget.dataset.name}"]) .avatar img`),
-		htmlAll = document.querySelectorAll('#teams'),
+		htmlEnemies = document.querySelectorAll('#team-b .avatar img:not([src="images/dead.jpg"])'),
+		htmlAllies = document.querySelectorAll('#team-a .avatar img:not([src="images/dead.jpg"])'),
+		htmlAlliesExceptSelf = document.querySelectorAll(`#team-a div:not([data-name="${e.currentTarget.dataset.name}"]) .avatar img:not([src="images/dead.jpg"])`),
+		htmlAll = document.querySelectorAll('#teams .avatar img:not([src="images/dead.jpg"])'),
 		htmlSelf = document.querySelector(`#team-a div[data-name="${e.currentTarget.dataset.name}"] .avatar img`),
 		charactersTargeted = '';
 
@@ -173,24 +173,27 @@ function toggleOverlay(e) {
 				charactersTargeted = htmlAllies;
 			} else {
 				charactersTargeted = htmlSelf;
-				overlay = document.createElement('div');
-				overlay.style.height = charactersTargeted.height + 'px';
-				overlay.style.width = charactersTargeted.width + 'px';
-
-				overlay.style.top = charactersTargeted.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(charactersTargeted).border) + 'px';
-				overlay.style.left = charactersTargeted.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(charactersTargeted).border) + 'px';
-				overlay.classList.add('overlay');
-
-				let tmp2 = document.createElement("div");
-				tmp2.appendChild(overlay);
-				charactersTargeted.insertAdjacentHTML('beforebegin', tmp2.innerHTML);
-
-				return;
 			}
 		}
 
-		charactersTargeted.forEach((enemy) => {
-			overlay = document.createElement('div');
+		addCharacterOverlay(charactersTargeted);
+
+		let characterOverlays = document.querySelectorAll('#teams .avatar .overlay');
+
+		characterOverlays.forEach((ch) => {
+			if (ch.dead) return;
+
+			ch.addEventListener('click', function(e) {
+				applySkill(skillClicked, e);
+			});
+		});
+	});
+}
+
+function addCharacterOverlay(target) {
+	let overlay = document.createElement('div');
+	if (target.length) {
+		target.forEach((enemy) => {
 			overlay.style.height = enemy.height + 'px';
 			overlay.style.width = enemy.width + 'px';
 
@@ -203,13 +206,18 @@ function toggleOverlay(e) {
 			tmp2.appendChild(overlay);
 			enemy.insertAdjacentHTML('beforebegin', tmp2.innerHTML);
 		});
+	} else {
+		overlay.style.height = target.height + 'px';
+		overlay.style.width = target.width + 'px';
 
-		let characterOverlays = document.querySelectorAll('#teams .avatar .overlay');
+		overlay.style.top = target.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(target).border) + 'px';
+		overlay.style.left = target.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(target).border) + 'px';
+		overlay.classList.add('overlay');
 
-		characterOverlays.forEach((ch) => {
-			ch.addEventListener('click', applySkill);
-		});
-	});
+		let tmp2 = document.createElement("div");
+		tmp2.appendChild(overlay);
+		target.insertAdjacentHTML('beforebegin', tmp2.innerHTML);
+	}
 }
 
 function updateDetailsContainer(e) {
@@ -265,10 +273,41 @@ function updateDetailsContainer(e) {
 	container.querySelector('#details #cooldown').textContent = cooldown;
 }
 
-function applySkill(e) {
+function applySkill(skill, e) {
 	let allOverlays = document.querySelectorAll('.overlay');
 
 	// TODO: add skill icon near character avatar
+
+	let applyOnChar = eval(e.target.closest('.char').dataset.name),
+		htmlCharClicked = e.target.closest('.char'),
+		htmlHP = htmlCharClicked.querySelector('.current-health'),
+		htmlHpBar = htmlCharClicked.querySelector('.health-bar-remaining');
+
+	if (skill.damage) {
+		applyOnChar.hp = applyOnChar.hp < skill.damage ? 0 : applyOnChar.hp - skill.damage;
+	}
+	if (skill.heal && applyOnChar.hp < 100) {
+		applyOnChar.hp = applyOnChar.hp + skill.heal > 100 ? 100 : applyOnChar.hp + skill.heal;
+	}
+
+	htmlHP.textContent = applyOnChar.hp;
+
+	htmlHpBar.style.width = applyOnChar.hp + '%';
+	if (applyOnChar.hp <= 70) {
+		htmlHpBar.style.backgroundColor = 'orange';
+
+		if (applyOnChar.hp <= 40) {
+			htmlHpBar.style.backgroundColor = 'red';
+
+			if (applyOnChar.hp <= 0) {
+				htmlCharClicked.querySelector('.avatar img').src = 'images/dead.jpg';
+				applyOnChar.dead = true;
+			}
+		}
+	} else {
+		htmlHpBar.style.backgroundColor = '#3CE041';
+	}
+
 	allOverlays.forEach((overlay) => overlay.remove());
 	lastClicked = '';
 	e.stopPropagation();

@@ -9,7 +9,12 @@ let sakura = {
             cooldown: 0,
             chakra: {'taijutsu': 1, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 0},
             classes: 'Physical, Instant, Melee',
-            targets: 'enemy',
+            targets: 'enemy, ally',
+            damage: 20,
+            heal: 0,
+            additional: ['Inner Sakura', 10],
+            stun_time: 1,
+            stun_skills: ['Physical, Mental'],
         },
         {
             name: 'Cure',
@@ -18,6 +23,8 @@ let sakura = {
             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 1, 'genjutsu': 0, 'any': 0},
             classes: 'Chakra, Instant',
             targets: 'ally, self',
+            damage: 0,
+            heal: 25,
         },
         {
             name: 'Inner Sakura',
@@ -26,6 +33,10 @@ let sakura = {
             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Mental, Instant, Unique',
             targets: 'self',
+            damage: 0,
+            heal: 0,
+            armor_type: 'static',
+            damage_reduction: 10,
         },
         {
             name: 'Sakura Hide',
@@ -34,6 +45,8 @@ let sakura = {
             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Chakra, Instant',
             targets: 'self',
+            damage: 0,
+            heal: 0,
         }
     ]
 },
@@ -50,6 +63,9 @@ naruto = {
             chakra: {'taijutsu': 1, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 0},
             classes: 'Physical, Instant, Melee',
             targets: 'enemy',
+            damage: 20,
+            heal: 0,
+            additional: ['Shadow Clones', 10],
         },
         {
             name: 'Rasengan',
@@ -58,6 +74,11 @@ naruto = {
             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 1, 'genjutsu': 0, 'any': 1},
             classes: 'Chakra, Instant, Melee',
             targets: 'enemy',
+            damage: 45,
+            heal: 0,
+            requires: 'Shadow Clones',
+            stun_time: 1,
+            stun_skills: ['all'],
         },
         {
             name: 'Shadow Clones',
@@ -66,6 +87,10 @@ naruto = {
             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Chakra, Instant',
             targets: 'self',
+            damage: 0,
+            heal: 0,
+            armor_type: 'static',
+            damage_reduction: 15,
         },
         {
             name: "Sexy Technique",
@@ -74,6 +99,8 @@ naruto = {
             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Chakra, Instant',
             targets: 'self',
+            damage: 0,
+            heal: 0,
         }
     ]
 },
@@ -90,6 +117,9 @@ sasuke = {
             chakra: {'taijutsu': 1, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Physical, Instant, Melee',
             targets: 'enemy',
+            damage: 30,
+            heal: 0,
+            additional: ['Sharingan', 15],
         },
         {
             name: 'Chidori',
@@ -98,6 +128,9 @@ sasuke = {
             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 2, 'genjutsu': 0, 'any': 1},
             classes: 'Chakra, Instant, Melee',
             targets: 'enemy',
+            damage: 30,
+            heal: 0,
+            additional: ['Sharingan', 25],
         },
         {
             name: 'Sharingan',
@@ -106,6 +139,10 @@ sasuke = {
             chakra: {'taijutsu': 0, 'bloodline': 1, 'ninjutsu': 0, 'genjutsu': 0, 'any': 0},
             classes: 'Mental, Instant, Unique, Ranged*',
             targets: 'enemy',
+            damage: 0,
+            heal: 0,
+            armor_type: 'static',
+            damage_reduction: 15,
         },
         {
             name: 'Swift Block',
@@ -114,6 +151,8 @@ sasuke = {
             chakra: {'taijutsu': 0, 'bloodline': 0, 'ninjutsu': 0, 'genjutsu': 0, 'any': 1},
             classes: 'Physical, Instant',
             targets: 'self',
+            damage: 0,
+            heal: 0,
         }
     ]
 };
