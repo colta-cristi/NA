@@ -1,6 +1,7 @@
 var chakraTypes = ['taijutsu', 'bloodline', 'ninjutsu', 'genjutsu', 'any'],
 	ch1, ch2, ch3, ch4, ch5, ch6,
-	lastClicked;
+	lastClicked,
+	chakra;
 
 function startGame(char1, char2, char3, char4, char5, char6) {
 	// initialize character & skills data
@@ -14,10 +15,10 @@ function startGame(char1, char2, char3, char4, char5, char6) {
 	init('ch5', ch5, true);
 	init('ch6', ch6, true);
 
-	let chakra = addChakra();
-	activateSkills(ch1, chakra);
-	activateSkills(ch2, chakra);
-	activateSkills(ch3, chakra);
+	chakra = addChakra();
+	activateSkills(ch1);
+	activateSkills(ch2);
+	activateSkills(ch3);
 }
 
 function init(id, char, enemy=false) {
@@ -51,10 +52,10 @@ function updateTimer(secondsPerRound = 10) {
 			secondsLeft = 60;
 			
 			// TODO: get charactersAlive
-			let chakra = addChakra();
-			activateSkills(ch1, chakra);
-			activateSkills(ch2, chakra);
-			activateSkills(ch3, chakra);
+			chakra = addChakra();
+			activateSkills(ch1);
+			activateSkills(ch2);
+			activateSkills(ch3);
         }
         timer.style.width = widthPercentage - step + '%';
     }, 1000);
@@ -75,18 +76,23 @@ function addChakra(charactersAlive = 3) {
     for (let i = 0; i < charactersAlive; i++)
 		chakraCounters[(chakraTypes[rand(1, 4) - 1])]++;
 
-		chakraTypes.forEach((i) => {
-			if (i == 'any') return;
-			document.querySelector(`.${i} .chakra-counter`).textContent = 'x' + chakraCounters[i];	
-		});
+	updateHtmlChakra(chakraCounters);
 
-		chakraCounters.any = chakraCounters.total.bind(chakraCounters)();
-		document.querySelector(`.total .chakra-counter`).innerHTML = '<b>T</b>x' + chakraCounters.any;
-
-		return chakraCounters;
+	return chakraCounters;
 }
 
-function activateSkills(character, chakra) {
+function updateHtmlChakra(chakraCounters) {
+	chakraCounters.any = chakraCounters.total.bind(chakraCounters)();
+
+	chakraTypes.forEach((i) => {
+		if (i == 'any') return;
+		document.querySelector(`.${i} .chakra-counter`).textContent = 'x' + chakraCounters[i];	
+	});
+
+	document.querySelector(`.total .chakra-counter`).innerHTML = '<b>T</b>x' + chakraCounters.any;
+}
+
+function activateSkills(character) {
 	character.skills.forEach(function(skill) {
 		let canActivate = true,
 			chakraNeeded = chakraTypes.filter(type => skill.chakra[type] > 0);
@@ -95,6 +101,7 @@ function activateSkills(character, chakra) {
 		chakraNeeded.forEach((type) => {
 			if (skill.chakra[type] > chakra[type]) {
 				canActivate = false;
+				document.querySelector(`.skills img[alt="${skill.name}"]`).style.opacity = '';
 				return;
 			}
 			if (chakra[type] >= skill.chakra[type] && canActivate) {
@@ -307,6 +314,15 @@ function applySkill(skill, e) {
 	} else {
 		htmlHpBar.style.backgroundColor = '#3CE041';
 	}
+
+	Object.keys(skill.chakra).forEach((type) => {
+		chakra[type] -= skill.chakra[type];
+		updateHtmlChakra(chakra);
+	});
+
+	activateSkills(ch1);
+	activateSkills(ch2);
+	activateSkills(ch3);
 
 	allOverlays.forEach((overlay) => overlay.remove());
 	lastClicked = '';

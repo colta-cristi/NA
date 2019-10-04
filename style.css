@@ -141,7 +141,7 @@ span.username {
 
 .health-bar-remaining {
 	background-color: #3CE041;
-	transition: width 2s;
+	transition: width 1s;
 	width: 100%;
 	height: 100%;
 	position: absolute;
