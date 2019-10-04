@@ -173,6 +173,7 @@ span.username {
 	opacity: 0.5;
 	z-index: 0;
 	color: #aaa;
+	position: relative;
 }
 
 .skills .selected-skill {

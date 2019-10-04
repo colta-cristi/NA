@@ -126,12 +126,13 @@ function toggleOverlay(e) {
 
 	let target = e.target.tagName == 'IMG' ? e.target : e.target.nextElementSibling,
 		allOverlays = document.querySelectorAll('.overlay'),
-		character = eval(e.currentTarget.dataset.name),
+		clickedCharacterName = e.currentTarget.dataset.name,
+		character = eval(clickedCharacterName),
 		htmlEnemies = document.querySelectorAll('#team-b .avatar img:not([src="images/dead.jpg"])'),
 		htmlAllies = document.querySelectorAll('#team-a .avatar img:not([src="images/dead.jpg"])'),
 		htmlAlliesExceptSelf = document.querySelectorAll(`#team-a div:not([data-name="${e.currentTarget.dataset.name}"]) .avatar img:not([src="images/dead.jpg"])`),
 		htmlAll = document.querySelectorAll('#teams .avatar img:not([src="images/dead.jpg"])'),
-		htmlSelf = document.querySelector(`#team-a div[data-name="${e.currentTarget.dataset.name}"] .avatar img`),
+		htmlSelf = document.querySelector(`#team-a div[data-name="${clickedCharacterName}"] .avatar img`),
 		charactersTargeted = '';
 
 	setTimeout(function() {
@@ -191,7 +192,7 @@ function toggleOverlay(e) {
 			if (ch.dead) return;
 
 			ch.addEventListener('click', function(e) {
-				applySkill(skillClicked, e);
+				applySkill(clickedCharacterName, skillClicked, e);
 			});
 		});
 	});
@@ -280,7 +281,7 @@ function updateDetailsContainer(e) {
 	container.querySelector('#details #cooldown').textContent = cooldown;
 }
 
-function applySkill(skill, e) {
+function applySkill(clickedCharacterName, skill, e) {
 	let allOverlays = document.querySelectorAll('.overlay');
 
 	// TODO: add skill icon near character avatar
@@ -289,6 +290,12 @@ function applySkill(skill, e) {
 		htmlCharClicked = e.target.closest('.char'),
 		htmlHP = htmlCharClicked.querySelector('.current-health'),
 		htmlHpBar = htmlCharClicked.querySelector('.health-bar-remaining');
+
+	let htmlSkill = document.querySelector(`img[alt="${skill.name}"`);
+	debugger;
+	let htmlSelectedSkill = document.querySelector(`.char data-name${clickedCharacterName} .selected-skill`);
+
+	htmlSkill.style.left = htmlSelectedSkill.offsetLeft - htmlSkill.offsetLeft + 'px';
 
 	if (skill.damage) {
 		applyOnChar.hp = applyOnChar.hp < skill.damage ? 0 : applyOnChar.hp - skill.damage;
