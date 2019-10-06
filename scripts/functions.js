@@ -49,13 +49,7 @@ function updateTimer(secondsPerRound = 10) {
 		// Change round
         if (widthPercentage - step <= 0) {
             timer.style.width = 100 + '%';
-			secondsLeft = 60;
-			
-			// TODO: get charactersAlive
-			chakra = addChakra();
-			activateSkills(ch1);
-			activateSkills(ch2);
-			activateSkills(ch3);
+			endTurn();
         }
         timer.style.width = widthPercentage - step + '%';
     }, 1000);
@@ -192,7 +186,7 @@ function toggleOverlay(e) {
 			if (ch.dead) return;
 
 			ch.addEventListener('click', function(e) {
-				applySkill(clickedCharacterName, skillClicked, e);
+				prepareSkill(clickedCharacterName, skillClicked, e);
 			});
 		});
 	});
@@ -281,57 +275,82 @@ function updateDetailsContainer(e) {
 	container.querySelector('#details #cooldown').textContent = cooldown;
 }
 
-function applySkill(clickedCharacterName, skill, e) {
-	let allOverlays = document.querySelectorAll('.overlay');
-
-	// TODO: add skill icon near character avatar
-
-	let applyOnChar = eval(e.target.closest('.char').dataset.name),
-		htmlCharClicked = e.target.closest('.char'),
-		htmlHP = htmlCharClicked.querySelector('.current-health'),
-		htmlHpBar = htmlCharClicked.querySelector('.health-bar-remaining');
-
-	let htmlSkill = document.querySelector(`img[alt="${skill.name}"`);
-	debugger;
-	let htmlSelectedSkill = document.querySelector(`.char data-name${clickedCharacterName} .selected-skill`);
-
-	htmlSkill.style.left = htmlSelectedSkill.offsetLeft - htmlSkill.offsetLeft + 'px';
-
-	if (skill.damage) {
-		applyOnChar.hp = applyOnChar.hp < skill.damage ? 0 : applyOnChar.hp - skill.damage;
+function endTurn(e) {
+	if (e) {
+		if( !confirm('end turn?')) return;
 	}
-	if (skill.heal && applyOnChar.hp < 100) {
-		applyOnChar.hp = applyOnChar.hp + skill.heal > 100 ? 100 : applyOnChar.hp + skill.heal;
-	}
-
-	htmlHP.textContent = applyOnChar.hp;
-
-	htmlHpBar.style.width = applyOnChar.hp + '%';
-	if (applyOnChar.hp <= 70) {
-		htmlHpBar.style.backgroundColor = 'orange';
-
-		if (applyOnChar.hp <= 40) {
-			htmlHpBar.style.backgroundColor = 'red';
-
-			if (applyOnChar.hp <= 0) {
-				htmlCharClicked.querySelector('.avatar img').src = 'images/dead.jpg';
-				applyOnChar.dead = true;
-			}
-		}
-	} else {
-		htmlHpBar.style.backgroundColor = '#3CE041';
-	}
-
-	Object.keys(skill.chakra).forEach((type) => {
-		chakra[type] -= skill.chakra[type];
-		updateHtmlChakra(chakra);
-	});
-
+	// TODO: get charactersAlive
+	chakra = addChakra();
 	activateSkills(ch1);
 	activateSkills(ch2);
 	activateSkills(ch3);
 
+	let skillsToBeApplied = document.querySelectorAll('.skill-to-be-used');
+
+	if (skillsToBeApplied) {
+		skillsToBeApplied.forEach(() => {
+			applySkill(applyOnCharName);
+		});
+	}
+}
+
+function prepareSkill(skillOwnerName, skill, e) {
+	let allOverlays = document.querySelectorAll('.overlay');
+
+	// TODO: add skill icon near character avatar
+
+	let htmlSkill = document.querySelector(`img[alt="${skill.name}"`);
+
+	let htmlSelectedSkill = document.querySelector(`div[data-name="${skillOwnerName}"] .selected-skill`);
+
+	htmlSkill.style.transform = `translateX(${htmlSelectedSkill.offsetLeft - htmlSkill.offsetLeft}px)`;
+	htmlSkill.classList.add('skill-to-be-used');
+	htmlSkill.setAttribute('data-skill-target', e.target.closest('.char').dataset.name);
+		
+
 	allOverlays.forEach((overlay) => overlay.remove());
 	lastClicked = '';
 	e.stopPropagation();
+}
+
+function applySkill(applyOnCharName = '') {
+	console.log(applyOnCharName);
+	let applyOnChar = eval(applyOnCharName),
+		htmlCharClicked = e.target.closest('.char'),
+		htmlHP = htmlCharClicked.querySelector('.current-health'),
+		htmlHpBar = htmlCharClicked.querySelector('.health-bar-remaining');
+
+		if (skill.damage) {
+			applyOnChar.hp = applyOnChar.hp < skill.damage ? 0 : applyOnChar.hp - skill.damage;
+		}
+		if (skill.heal && applyOnChar.hp < 100) {
+			applyOnChar.hp = applyOnChar.hp + skill.heal > 100 ? 100 : applyOnChar.hp + skill.heal;
+		}
+	
+		htmlHP.textContent = applyOnChar.hp;
+	
+		htmlHpBar.style.width = applyOnChar.hp + '%';
+		if (applyOnChar.hp <= 70) {
+			htmlHpBar.style.backgroundColor = 'orange';
+	
+			if (applyOnChar.hp <= 40) {
+				htmlHpBar.style.backgroundColor = 'red';
+	
+				if (applyOnChar.hp <= 0) {
+					htmlCharClicked.querySelector('.avatar img').src = 'images/dead.jpg';
+					applyOnChar.dead = true;
+				}
+			}
+		} else {
+			htmlHpBar.style.backgroundColor = '#3CE041';
+		}
+	
+		Object.keys(skill.chakra).forEach((type) => {
+			chakra[type] -= skill.chakra[type];
+			updateHtmlChakra(chakra);
+		});
+	
+		activateSkills(ch1);
+		activateSkills(ch2);
+		activateSkills(ch3);
 }
