@@ -1,11 +1,30 @@
 var chakraTypes = ['taijutsu', 'bloodline', 'ninjutsu', 'genjutsu', 'any'],
-	ch1, ch2, ch3, ch4, ch5, ch6,
+	ch1 = {}, ch2 = {}, ch3 = {}, ch4 = {}, ch5 = {}, ch6 = {},
 	lastClicked,
 	chakra;
 
 function startGame(char1, char2, char3, char4, char5, char6) {
 	// initialize character & skills data
-	ch1 = char1, ch2 = char2, ch3 = char3, ch4 = char4, ch5 = char5, ch6 = char6;
+
+	for (let key in char1) {
+		ch1[key] = char1[key];
+	}
+	for (let key in char2) {
+		ch2[key] = char2[key];
+	}
+	for (let key in char3) {
+		ch3[key] = char3[key];
+	}
+	for (let key in char4) {
+		ch4[key] = char4[key];
+	}
+	for (let key in char5) {
+		ch5[key] = char5[key];
+	}
+	for (let key in char6) {
+		ch6[key] = char6[key];
+	}
+
 	
 	init('ch1', ch1);
 	init('ch2', ch2);
@@ -16,9 +35,9 @@ function startGame(char1, char2, char3, char4, char5, char6) {
 	init('ch6', ch6, true);
 
 	chakra = addChakra();
-	activateSkills(ch1);
-	activateSkills(ch2);
-	activateSkills(ch3);
+	updateSkillActivationStatus(ch1);
+	updateSkillActivationStatus(ch2);
+	updateSkillActivationStatus(ch3);
 }
 
 function init(id, char, enemy=false) {
@@ -37,9 +56,9 @@ function init(id, char, enemy=false) {
 	} );
 }
 
-function updateTimer(secondsPerRound = 10) {
+function updateTimer(secondsPerRound = 20) {
     let timer = document.getElementById('timer-bar'),
-        timerContainer = document.getElementById('timer-container');
+		timerContainer = document.getElementById('timer-container');
 
     setInterval( () => {
         let widthPercentage = Number.parseFloat(window.getComputedStyle(timer).width) * 100 / 
@@ -86,7 +105,7 @@ function updateHtmlChakra(chakraCounters) {
 	document.querySelector(`.total .chakra-counter`).innerHTML = '<b>T</b>x' + chakraCounters.any;
 }
 
-function activateSkills(character) {
+function updateSkillActivationStatus(character) {
 	character.skills.forEach(function(skill) {
 		let canActivate = true,
 			chakraNeeded = chakraTypes.filter(type => skill.chakra[type] > 0);
@@ -115,7 +134,8 @@ function toggleOverlay(e) {
 	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || 
 		e.target.classList.contains('selected-skill') ||
 		e.target.closest('.avatar') ||
-		!e.target.classList.contains('overlay') && e.target.style.opacity != 1)
+		!e.target.classList.contains('overlay') && e.target.style.opacity != 1 ||
+		e.target.classList.contains('skill-to-be-used') )
 			return;
 
 	let target = e.target.tagName == 'IMG' ? e.target : e.target.nextElementSibling,
@@ -276,22 +296,30 @@ function updateDetailsContainer(e) {
 }
 
 function endTurn(e) {
-	if (e) {
-		if( !confirm('end turn?')) return;
-	}
-	// TODO: get charactersAlive
-	chakra = addChakra();
-	activateSkills(ch1);
-	activateSkills(ch2);
-	activateSkills(ch3);
+	let skillsToBeApplied = document.querySelectorAll('.skill-to-be-used'),
+		timer = document.getElementById('timer-bar'),
+		endTurn = e ? confirm('end turn?') : true;
 
-	let skillsToBeApplied = document.querySelectorAll('.skill-to-be-used');
+	if (endTurn) {
+		timer.style.width = '100%';
 
-	if (skillsToBeApplied) {
-		skillsToBeApplied.forEach(() => {
-			applySkill(applyOnCharName);
-		});
+		if (skillsToBeApplied[0]) {
+			skillsToBeApplied.forEach((skill) => {
+				let skillObject = eval(skill.closest('.char').id).skills[skill.dataset.skill - 1];
+
+				applySkill(skillObject, skill.dataset.skillTarget);
+				unprepareSkill(skill);
+			});
+		}
+
+		// TODO: get charactersAlive
+		chakra = addChakra();
+		updateSkillActivationStatus(ch1);
+		updateSkillActivationStatus(ch2);
+		updateSkillActivationStatus(ch3);
 	}
+
+	return;
 }
 
 function prepareSkill(skillOwnerName, skill, e) {
@@ -305,18 +333,26 @@ function prepareSkill(skillOwnerName, skill, e) {
 
 	htmlSkill.style.transform = `translateX(${htmlSelectedSkill.offsetLeft - htmlSkill.offsetLeft}px)`;
 	htmlSkill.classList.add('skill-to-be-used');
-	htmlSkill.setAttribute('data-skill-target', e.target.closest('.char').dataset.name);
+	htmlSkill.setAttribute('data-skill-target', e.target.closest('.char').id);
 		
 
 	allOverlays.forEach((overlay) => overlay.remove());
 	lastClicked = '';
+
+	htmlSkill.addEventListener('dblclick', () => {
+		unprepareSkill(htmlSkill);
+	});
 	e.stopPropagation();
 }
 
-function applySkill(applyOnCharName = '') {
-	console.log(applyOnCharName);
-	let applyOnChar = eval(applyOnCharName),
-		htmlCharClicked = e.target.closest('.char'),
+function unprepareSkill(htmlSkill) {
+	htmlSkill.style.transform = '';
+	htmlSkill.classList.remove('skill-to-be-used');
+}
+
+function applySkill(skill = '', skillTarget = '') {
+	let applyOnChar = eval(skillTarget),
+		htmlCharClicked = document.getElementById(skillTarget),
 		htmlHP = htmlCharClicked.querySelector('.current-health'),
 		htmlHpBar = htmlCharClicked.querySelector('.health-bar-remaining');
 
@@ -350,7 +386,7 @@ function applySkill(applyOnCharName = '') {
 			updateHtmlChakra(chakra);
 		});
 	
-		activateSkills(ch1);
-		activateSkills(ch2);
-		activateSkills(ch3);
+		updateSkillActivationStatus(ch1);
+		updateSkillActivationStatus(ch2);
+		updateSkillActivationStatus(ch3);
 }
