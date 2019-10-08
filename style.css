@@ -90,10 +90,6 @@ span.username {
 	display: inline-block;
 }
 
-.chakra {
-	display: inline;
-}
-
 .taijutsu .square {
 	background-color: #09F236;
 }
@@ -277,4 +273,8 @@ span.username {
 	display: block;
 	height: 55px;
     margin: 0;
+}
+
+.text-center {
+	text-align: center;
 }

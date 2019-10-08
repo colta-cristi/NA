@@ -1,0 +1,87 @@
+#chakra-selection-modal {
+    height: 350px;
+    width: 440px;
+    outline: 1px solid black;
+    border: 8px solid #cf0804;
+    background-color: beige;
+    text-transform: uppercase;
+    box-sizing: border-box;
+    padding: 20px 50px;
+    font-weight: bold;
+}
+
+#chakra-selection-modal h3 span {
+    color: red;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.types > *,  .current-values > *, .subtracted-values > * {
+    margin: 5px 0;
+}
+
+.adjustment-controls > * {
+    font-size: 22px;
+    line-height: 24px;
+}
+
+span.plus {
+    margin-right: 2px;
+}
+
+.subtracted-values > *, .current-values > * {
+    display: block;
+    /* font-weight: bold; */
+}
+
+.skills-carousel {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.skills-carousel img {
+    height: 50px;
+}
+
+.arrow-left {
+    height: 0;
+    width: 0;
+
+    border-right: 15px solid #AAA;
+    border-bottom: 25px solid transparent;
+    border-top: 25px solid transparent;
+    display: inline-block;
+}
+
+.arrow-right {
+    height: 0;
+    width: 0;
+
+    border-left: 15px solid #AAA;
+    border-bottom: 25px solid transparent;
+    border-top: 25px solid transparent;
+    display: inline-block;
+}
+
+footer {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#ok, #cancel {
+    height: 35px;
+    width: 100px;
+    border: 1px solid black;
+    line-height: 35px;
+    background-color: #FBE9B9;
+    font-size: 20px;
+}
