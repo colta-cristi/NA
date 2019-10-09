@@ -28,4 +28,4 @@ character4.addEventListener('click', updateDetailsContainer);
 character5.addEventListener('click', updateDetailsContainer);
 character6.addEventListener('click', updateDetailsContainer);
 
-endTurnButton.addEventListener('click', endTurn);
+endTurnButton.addEventListener('click', openModal);

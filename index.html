@@ -2,10 +2,109 @@
 <html>
 <head>
 	<title>NA</title>
-	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
+	
 	<div id="board">
+			<div id="popup-overlay"></div>
+			<div id="modal-container">
+				<div id="chakra-selection-modal">
+					<h3 class="text-center">Choose <span>1</span> random chakra(s)</h3>
+					<div class="header">
+						<span>chakra left:</span>
+						<span>random chakra:</span>
+					</div>
+					<div class="container">
+						<div class="types">
+							<div class="chakra taijutsu">
+								<div class="square"></div>
+								<span class="row">taijutsu</span>
+							</div>
+							<div class="chakra bloodline">
+								<div class="square"></div>
+								<span class="row">bloodline</span>
+							</div>
+							<div class="chakra ninjutsu">
+								<div class="square"></div>
+								<span class="row">ninjutsu</span>
+							</div>
+							<div class="chakra genjutsu">
+								<div class="square"></div>
+								<span class="row">genjutsu</span>
+							</div>
+						</div>
+		
+						<div class="current-values">
+							<span class="chakra-counter">0</span>
+							<span class="chakra-counter">0</span>
+							<span class="chakra-counter">0</span>
+							<span class="chakra-counter">0</span>
+						</div>
+		
+						<div class="adjustment-controls">
+							<div>
+								<span class="plus">+</span>
+								<span class="minus">-</span>
+							</div>
+							<div>
+								<span class="plus">+</span>
+								<span class="minus">-</span>
+							</div>
+							<div>
+								<span class="plus">+</span>
+								<span class="minus">-</span>
+							</div>
+							<div>
+								<span class="plus">+</span>
+								<span class="minus">-</span>
+							</div>
+						</div>
+		
+						<div class="types">
+							<div class="chakra taijutsu">
+								<div class="square"></div>
+								<span class="row">taijutsu</span>
+							</div>
+							<div class="chakra bloodline">
+								<div class="square"></div>
+								<span class="row">bloodline</span>
+							</div>
+							<div class="chakra ninjutsu">
+								<div class="square"></div>
+								<span class="row">ninjutsu</span>
+							</div>
+							<div class="chakra genjutsu">
+								<div class="square"></div>
+								<span class="row">genjutsu</span>
+							</div>
+						</div>
+		
+						<div class="subtracted-values">
+							<span class="chakra-counter">0</span>
+							<span class="chakra-counter">0</span>
+							<span class="chakra-counter">0</span>
+							<span class="chakra-counter">0</span>
+						</div>
+					</div>
+		
+					<div class="skills-carousel">
+						<div>
+							<span class="arrow-left"></span>
+							<img src="images/placeholder.png" alt="">
+							<img src="images/placeholder.png" alt="">
+							<img src="images/placeholder.png" alt="">
+						</div>
+		
+						<span class="arrow-right"></span>
+					</div>
+					<div id="modal-footer">
+						<div data-option="ok" class="text-center">ok</div>
+						<div data-option="cancel" class="text-center">cancel</div>
+					</div>
+				</div>
+			</div>
 		<div id="header">
 			<div class="center">
 				<div id="player-one">
@@ -180,5 +279,6 @@
 	<script src="data/characters.js"></script>
 	<script src="scripts/functions.js"></script>
 	<script src="scripts/main.js"></script>
+	<script src="scripts/partials/modal.js"></script>
 </body>
 </html>

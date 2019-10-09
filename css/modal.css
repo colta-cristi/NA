@@ -1,6 +1,15 @@
+#modal-container {
+    height: 560px;
+    width: 770px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    visibility: hidden;
+}
+
 #chakra-selection-modal {
     height: 350px;
-    width: 440px;
+    width: 410px;
     outline: 1px solid black;
     border: 8px solid #cf0804;
     background-color: beige;
@@ -8,6 +17,13 @@
     box-sizing: border-box;
     padding: 20px 50px;
     font-weight: bold;
+    position: absolute;
+    z-index: 2;
+    top: 100px;
+}
+
+#board {
+    background-color: black;
 }
 
 #chakra-selection-modal h3 span {
@@ -39,17 +55,19 @@ span.plus {
 
 .subtracted-values > *, .current-values > * {
     display: block;
-    /* font-weight: bold; */
 }
 
 .skills-carousel {
     display: flex;
     justify-content: space-between;
     margin: 10px 0;
+    height: 56px;
+    overflow: hidden;
 }
 
 .skills-carousel img {
     height: 50px;
+    -webkit-user-drag: none;
 }
 
 .arrow-left {
@@ -60,6 +78,7 @@ span.plus {
     border-bottom: 25px solid transparent;
     border-top: 25px solid transparent;
     display: inline-block;
+    visibility: hidden;
 }
 
 .arrow-right {
@@ -70,14 +89,15 @@ span.plus {
     border-bottom: 25px solid transparent;
     border-top: 25px solid transparent;
     display: inline-block;
+    visibility: hidden;
 }
 
-footer {
+#modal-footer {
     display: flex;
     justify-content: space-evenly;
 }
 
-#ok, #cancel {
+#modal-footer *[data-option] {
     height: 35px;
     width: 100px;
     border: 1px solid black;

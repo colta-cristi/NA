@@ -25,7 +25,7 @@ function startGame(char1, char2, char3, char4, char5, char6) {
 		ch6[key] = char6[key];
 	}
 
-	
+
 	init('ch1', ch1);
 	init('ch2', ch2);
 	init('ch3', ch3);
@@ -40,7 +40,7 @@ function startGame(char1, char2, char3, char4, char5, char6) {
 	updateSkillActivationStatus(ch3);
 }
 
-function init(id, char, enemy=false) {
+function init(id, char, enemy = false) {
 	let charContainer = document.getElementById(id);
 	charContainer.dataset.name = char.folderName;
 	charContainer.querySelector('.avatar img').src = `images/${char.folderName}/avatar.jpg`;
@@ -51,42 +51,42 @@ function init(id, char, enemy=false) {
 
 	skills = charContainer.querySelectorAll('.skills img:not(.selected-skill)');
 	skills.forEach((image, index) => {
-		image.src = `images/${char.folderName}/${index+1}.jpg`;
+		image.src = `images/${char.folderName}/${index + 1}.jpg`;
 		image.alt = eval(char.folderName).skills[index].name;
-	} );
+	});
 }
 
-function updateTimer(secondsPerRound = 60) {
-    let timer = document.getElementById('timer-bar'),
+function updateTimer(secondsPerRound = 20) {
+	let timer = document.getElementById('timer-bar'),
 		timerContainer = document.getElementById('timer-container');
 
-    setInterval( () => {
-        let widthPercentage = Number.parseFloat(window.getComputedStyle(timer).width) * 100 / 
-            Number.parseFloat(window.getComputedStyle(timerContainer).width),
+	setInterval(() => {
+		let widthPercentage = Number.parseFloat(window.getComputedStyle(timer).width) * 100 /
+			Number.parseFloat(window.getComputedStyle(timerContainer).width),
 			step = 100 / secondsPerRound;
-			
+
 		// Change round
-        if (widthPercentage - step <= 0) {
-            timer.style.width = 100 + '%';
+		if (widthPercentage - step <= 0) {
+			timer.style.width = 100 + '%';
 			endTurn();
-        }
-        timer.style.width = widthPercentage - step + '%';
-    }, 1000);
+		}
+		timer.style.width = widthPercentage - step + '%';
+	}, 1000);
 }
 
 function addChakra(charactersAlive = 3) {
-    let chakraCounters = {
-			'taijutsu': Number.parseInt(document.querySelector(`.${chakraTypes[0]} .chakra-counter`).textContent[1]),
-			'bloodline': Number.parseInt(document.querySelector(`.${chakraTypes[2]} .chakra-counter`).textContent[1]),
-			'ninjutsu': Number.parseInt(document.querySelector(`.${chakraTypes[1]} .chakra-counter`).textContent[1]),
-			'genjutsu': Number.parseInt(document.querySelector(`.${chakraTypes[3]} .chakra-counter`).textContent[1]),
-			'total': function() {
-				return this.taijutsu + this.ninjutsu + this.bloodline + this.genjutsu;
-			}
-		};
+	let chakraCounters = {
+		'taijutsu': Number.parseInt(document.querySelector(`.${chakraTypes[0]} .chakra-counter`).textContent[1]),
+		'bloodline': Number.parseInt(document.querySelector(`.${chakraTypes[2]} .chakra-counter`).textContent[1]),
+		'ninjutsu': Number.parseInt(document.querySelector(`.${chakraTypes[1]} .chakra-counter`).textContent[1]),
+		'genjutsu': Number.parseInt(document.querySelector(`.${chakraTypes[3]} .chakra-counter`).textContent[1]),
+		'total': function () {
+			return this.taijutsu + this.ninjutsu + this.bloodline + this.genjutsu;
+		}
+	};
 
 
-    for (let i = 0; i < charactersAlive; i++)
+	for (let i = 0; i < charactersAlive; i++)
 		chakraCounters[(chakraTypes[rand(1, 4) - 1])]++;
 
 	updateHtmlChakra(chakraCounters);
@@ -99,14 +99,14 @@ function updateHtmlChakra(chakraCounters) {
 
 	chakraTypes.forEach((i) => {
 		if (i == 'any') return;
-		document.querySelector(`.${i} .chakra-counter`).textContent = 'x' + chakraCounters[i];	
+		document.querySelector(`.${i} .chakra-counter`).textContent = 'x' + chakraCounters[i];
 	});
 
 	document.querySelector(`.total .chakra-counter`).innerHTML = '<b>T</b>x' + chakraCounters.any;
 }
 
 function updateSkillActivationStatus(character) {
-	character.skills.forEach(function(skill) {
+	character.skills.forEach(function (skill) {
 		let canActivate = true,
 			chakraNeeded = chakraTypes.filter(type => skill.chakra[type] > 0);
 
@@ -125,18 +125,18 @@ function updateSkillActivationStatus(character) {
 	});
 }
 
-function rand( lowest, highest){
-    var adjustedHigh = (highest - lowest) + 1;       
-    return Math.floor(Math.random()*adjustedHigh) + parseFloat(lowest);
+function rand(lowest, highest) {
+	var adjustedHigh = (highest - lowest) + 1;
+	return Math.floor(Math.random() * adjustedHigh) + parseFloat(lowest);
 }
 
 function toggleOverlay(e) {
-	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || 
+	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') ||
 		e.target.classList.contains('selected-skill') ||
 		e.target.closest('.avatar') ||
 		!e.target.classList.contains('overlay') && e.target.style.opacity != 1 ||
-		e.target.classList.contains('skill-to-be-used') )
-			return;
+		e.target.classList.contains('skill-to-be-used'))
+		return;
 
 	let target = e.target.tagName == 'IMG' ? e.target : e.target.nextElementSibling,
 		allOverlays = document.querySelectorAll('.overlay'),
@@ -149,7 +149,7 @@ function toggleOverlay(e) {
 		htmlSelf = document.querySelector(`#team-a div[data-name="${clickedCharacterName}"] .avatar img`),
 		charactersTargeted = '';
 
-	setTimeout(function() {
+	setTimeout(function () {
 		let skillClicked = character.skills[target.dataset.skill - 1];
 		if (lastClicked) {
 			if (lastClicked.name == skillClicked.name) {
@@ -205,7 +205,7 @@ function toggleOverlay(e) {
 		characterOverlays.forEach((ch) => {
 			if (ch.dead) return;
 
-			ch.addEventListener('click', function(e) {
+			ch.addEventListener('click', function (e) {
 				prepareSkill(clickedCharacterName, skillClicked, e);
 			});
 		});
@@ -243,14 +243,14 @@ function addCharacterOverlay(target) {
 }
 
 function updateDetailsContainer(e) {
-	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') || 
-		e.target.classList.contains('selected-skill')) 
-			return;
+	if (e.target.tagName !== 'IMG' && !e.target.classList.contains('overlay') ||
+		e.target.classList.contains('selected-skill'))
+		return;
 
-	let target, 
+	let target,
 		container = document.querySelector('#details'),
 		char = eval(e.currentTarget.dataset.name),
-		title = '', 
+		title = '',
 		description = '',
 		classes = '',
 		cooldown = '',
@@ -278,7 +278,7 @@ function updateDetailsContainer(e) {
 		cooldown = `cooldown: ${skill.cooldown}`;
 
 		chakraTypes.forEach((type) => {
-			if (skill.chakra[type] > 0 ) {
+			if (skill.chakra[type] > 0) {
 				for (let i = 0; i < skill.chakra[type]; i++)
 					chakraIcons += `<div class="chakra ${type}"><div class="square"></div></div>`;
 			}
@@ -295,32 +295,30 @@ function updateDetailsContainer(e) {
 	container.querySelector('#details #cooldown').textContent = cooldown;
 }
 
-function endTurn(e) {
+function endTurn(isConfirmed = false) {
 	let skillsToBeApplied = document.querySelectorAll('.skill-to-be-used'),
-		endTurn = e ? confirm('end turn?') : false;
+		timer = document.getElementById('timer-bar');
 
-	if (skillsToBeApplied) {
-		skillsToBeApplied.forEach((skill) => {
-			let skillObject = eval(skill.closest('.char').id).skills[skill.dataset.skill - 1],
-				timer = document.getElementById('timer-bar');
+	if (isConfirmed) {
+		timer.style.width = '100%';
 
-			timer.style.width = '100%';
+		if (skillsToBeApplied[0]) {
+			skillsToBeApplied.forEach((skill) => {
+				let skillObject = eval(skill.closest('.char').id).skills[skill.dataset.skill - 1];
 
-			unprepareSkill(skill);
-
-			if (endTurn) {
 				applySkill(skillObject, skill.dataset.skillTarget);
-			} else {
-				return;
-			}
-		});
+				unprepareSkill(skill);
+			});
+		}
+
+		// TODO: get charactersAlive
+		chakra = addChakra();
+		updateSkillActivationStatus(ch1);
+		updateSkillActivationStatus(ch2);
+		updateSkillActivationStatus(ch3);
 	}
 
-	// TODO: get charactersAlive
-	chakra = addChakra();
-	updateSkillActivationStatus(ch1);
-	updateSkillActivationStatus(ch2);
-	updateSkillActivationStatus(ch3);
+	return;
 }
 
 function prepareSkill(skillOwnerName, skill, e) {
@@ -335,7 +333,7 @@ function prepareSkill(skillOwnerName, skill, e) {
 	htmlSkill.style.transform = `translateX(${htmlSelectedSkill.offsetLeft - htmlSkill.offsetLeft}px)`;
 	htmlSkill.classList.add('skill-to-be-used');
 	htmlSkill.setAttribute('data-skill-target', e.target.closest('.char').id);
-		
+
 
 	allOverlays.forEach((overlay) => overlay.remove());
 	lastClicked = '';
@@ -357,37 +355,63 @@ function applySkill(skill = '', skillTarget = '') {
 		htmlHP = htmlCharClicked.querySelector('.current-health'),
 		htmlHpBar = htmlCharClicked.querySelector('.health-bar-remaining');
 
-		if (skill.damage) {
-			applyOnChar.hp = applyOnChar.hp < skill.damage ? 0 : applyOnChar.hp - skill.damage;
-		}
-		if (skill.heal && applyOnChar.hp < 100) {
-			applyOnChar.hp = applyOnChar.hp + skill.heal > 100 ? 100 : applyOnChar.hp + skill.heal;
-		}
-	
-		htmlHP.textContent = applyOnChar.hp;
-	
-		htmlHpBar.style.width = applyOnChar.hp + '%';
-		if (applyOnChar.hp <= 70) {
-			htmlHpBar.style.backgroundColor = 'orange';
-	
-			if (applyOnChar.hp <= 40) {
-				htmlHpBar.style.backgroundColor = 'red';
-	
-				if (applyOnChar.hp <= 0) {
-					htmlCharClicked.querySelector('.avatar img').src = 'images/dead.jpg';
-					applyOnChar.dead = true;
-				}
+	if (skill.damage) {
+		applyOnChar.hp = applyOnChar.hp < skill.damage ? 0 : applyOnChar.hp - skill.damage;
+	}
+	if (skill.heal && applyOnChar.hp < 100) {
+		applyOnChar.hp = applyOnChar.hp + skill.heal > 100 ? 100 : applyOnChar.hp + skill.heal;
+	}
+
+	htmlHP.textContent = applyOnChar.hp;
+
+	htmlHpBar.style.width = applyOnChar.hp + '%';
+	if (applyOnChar.hp <= 70) {
+		htmlHpBar.style.backgroundColor = 'orange';
+
+		if (applyOnChar.hp <= 40) {
+			htmlHpBar.style.backgroundColor = 'red';
+
+			if (applyOnChar.hp <= 0) {
+				htmlCharClicked.querySelector('.avatar img').src = 'images/dead.jpg';
+				applyOnChar.dead = true;
 			}
-		} else {
-			htmlHpBar.style.backgroundColor = '#3CE041';
 		}
-	
-		Object.keys(skill.chakra).forEach((type) => {
-			chakra[type] -= skill.chakra[type];
-			updateHtmlChakra(chakra);
-		});
-	
-		updateSkillActivationStatus(ch1);
-		updateSkillActivationStatus(ch2);
-		updateSkillActivationStatus(ch3);
+	} else {
+		htmlHpBar.style.backgroundColor = '#3CE041';
+	}
+
+	Object.keys(skill.chakra).forEach((type) => {
+		chakra[type] -= skill.chakra[type];
+		updateHtmlChakra(chakra);
+	});
+
+	updateSkillActivationStatus(ch1);
+	updateSkillActivationStatus(ch2);
+	updateSkillActivationStatus(ch3);
+}
+
+// modal-related functions
+
+let modalContainer = document.getElementById('modal-container'),
+	modalOverlay = document.getElementById('popup-overlay'),
+	cancel = document.querySelector('#modal-footer *[data-option="cancel"]'),
+	okay = document.querySelector('#modal-footer *[data-option="ok"]'),
+	board = document.getElementById('board');
+
+cancel.addEventListener('click', closeModal);
+okay.addEventListener('click', function() {
+	endTurn(true);
+	closeModal();
+});
+
+function closeModal() {
+	board.style.position = 'static';
+	modalContainer.style.visibility = 'hidden';
+	modalOverlay.style.display = 'none';
+}
+
+function openModal() {
+	board.style.position = 'relative';
+	modalContainer.style.visibility = 'visible';
+	modalOverlay.style.display = 'block';
 }
