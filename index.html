@@ -11,7 +11,7 @@
 			<div id="popup-overlay"></div>
 			<div id="modal-container">
 				<div id="chakra-selection-modal">
-					<h3 class="text-center">Choose <span>1</span> random chakra(s)</h3>
+					<h3 class="text-center">Choose <span id="modal-choose-counter">1</span> random chakra(s)</h3>
 					<div class="header">
 						<span>chakra left:</span>
 						<span>random chakra:</span>
@@ -45,20 +45,20 @@
 		
 						<div class="adjustment-controls">
 							<div>
-								<span class="plus">+</span>
-								<span class="minus">-</span>
+								<span class="minus" data-index="0">-</span>
+								<span class="plus" data-index="0">+</span>
 							</div>
 							<div>
-								<span class="plus">+</span>
-								<span class="minus">-</span>
+								<span class="minus" data-index="1">-</span>
+								<span class="plus" data-index="1">+</span>
 							</div>
 							<div>
-								<span class="plus">+</span>
-								<span class="minus">-</span>
+								<span class="minus" data-index="2">-</span>
+								<span class="plus" data-index="2">+</span>
 							</div>
-							<div>
-								<span class="plus">+</span>
-								<span class="minus">-</span>
+								<div>
+								<span class="minus" data-index="3">-</span>
+								<span class="plus" data-index="3">+</span>
 							</div>
 						</div>
 		
@@ -89,18 +89,9 @@
 						</div>
 					</div>
 		
-					<div class="skills-carousel">
-						<div>
-							<span class="arrow-left"></span>
-							<img src="images/placeholder.png" alt="">
-							<img src="images/placeholder.png" alt="">
-							<img src="images/placeholder.png" alt="">
-						</div>
-		
-						<span class="arrow-right"></span>
-					</div>
+					<div id="skills-carousel"></div>
 					<div id="modal-footer">
-						<div data-option="ok" class="text-center">ok</div>
+						<div data-option="ok" class="text-center disabled">ok</div>
 						<div data-option="cancel" class="text-center">cancel</div>
 					</div>
 				</div>
@@ -279,6 +270,5 @@
 	<script src="data/characters.js"></script>
 	<script src="scripts/functions.js"></script>
 	<script src="scripts/main.js"></script>
-	<script src="scripts/partials/modal.js"></script>
 </body>
 </html>

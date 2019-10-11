@@ -57,16 +57,18 @@ span.plus {
     display: block;
 }
 
-.skills-carousel {
+#skills-carousel {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin: 10px 0;
     height: 56px;
     overflow: hidden;
 }
 
-.skills-carousel img {
+#skills-carousel img {
     height: 50px;
+    width: 50px;
+    margin-right: 7px;
     -webkit-user-drag: none;
 }
 
@@ -104,4 +106,10 @@ span.plus {
     line-height: 35px;
     background-color: #FBE9B9;
     font-size: 20px;
+}
+
+#modal-footer .disabled {
+    pointer-events: none;
+    color: #777;
+    border-color: #777;
 }

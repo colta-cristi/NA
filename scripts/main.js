@@ -28,4 +28,20 @@ character4.addEventListener('click', updateDetailsContainer);
 character5.addEventListener('click', updateDetailsContainer);
 character6.addEventListener('click', updateDetailsContainer);
 
-endTurnButton.addEventListener('click', openModal);
+endTurnButton.addEventListener('click', function() {
+    let counters = [],
+        chakraCounters = document.querySelectorAll('.chakra span.chakra-counter'),
+        skillsToBeApplied = document.querySelectorAll('.skill-to-be-used');
+
+    if (!skillsToBeApplied[0]) {
+        endTurn(true);
+        return;
+    }
+
+    chakraCounters.forEach((c) => {
+        if (!isNaN( Number.parseInt( c.textContent.slice(1) ) ))
+            counters.push(Number.parseInt(c.textContent.slice(1)));
+    })
+
+    openUpdatedModal(counters);
+});

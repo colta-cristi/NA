@@ -56,7 +56,7 @@ function init(id, char, enemy = false) {
 	});
 }
 
-function updateTimer(secondsPerRound = 20) {
+function updateTimer(secondsPerRound = 220) {
 	let timer = document.getElementById('timer-bar'),
 		timerContainer = document.getElementById('timer-container');
 
@@ -68,7 +68,8 @@ function updateTimer(secondsPerRound = 20) {
 		// Change round
 		if (widthPercentage - step <= 0) {
 			timer.style.width = 100 + '%';
-			endTurn();
+			endTurn(true);
+			closeModal();
 		}
 		timer.style.width = widthPercentage - step + '%';
 	}, 1000);
@@ -380,6 +381,7 @@ function applySkill(skill = '', skillTarget = '') {
 		htmlHpBar.style.backgroundColor = '#3CE041';
 	}
 
+	// TODO: make lines below a function updateChakra()
 	Object.keys(skill.chakra).forEach((type) => {
 		chakra[type] -= skill.chakra[type];
 		updateHtmlChakra(chakra);
@@ -390,28 +392,99 @@ function applySkill(skill = '', skillTarget = '') {
 	updateSkillActivationStatus(ch3);
 }
 
-// modal-related functions
+// modal-related functions & variables
 
 let modalContainer = document.getElementById('modal-container'),
 	modalOverlay = document.getElementById('popup-overlay'),
 	cancel = document.querySelector('#modal-footer *[data-option="cancel"]'),
 	okay = document.querySelector('#modal-footer *[data-option="ok"]'),
-	board = document.getElementById('board');
+	board = document.getElementById('board'),
+	currentCounters = document.querySelectorAll('.current-values .chakra-counter'),
+	plusMinus = document.querySelectorAll('.adjustment-controls span');
+
+plusMinus.forEach((control) => {
+	control.addEventListener('click', adjustChakra)
+});
 
 cancel.addEventListener('click', closeModal);
 okay.addEventListener('click', function() {
+
+	// update chakra counters after consuming selected random chakra
+	let i = 0;
+	chakraTypes.forEach((type) => {
+		if (type == 'any') return;
+		chakra[type] = currentCounters[i++].textContent;
+	});
+
 	endTurn(true);
 	closeModal();
 });
 
 function closeModal() {
+	let images = document.querySelectorAll('#skills-carousel img');
+
+	images.forEach((image) => image.remove());
 	board.style.position = 'static';
 	modalContainer.style.visibility = 'hidden';
 	modalOverlay.style.display = 'none';
 }
 
-function openModal() {
-	board.style.position = 'relative';
-	modalContainer.style.visibility = 'visible';
-	modalOverlay.style.display = 'block';
+function openUpdatedModal(counters) {
+	let i = 0;
+
+	counters.forEach((c) => {
+		currentCounters[i++].textContent = c;
+	})
+
+	let skillsToBeApplied = document.querySelectorAll('.skill-to-be-used'),
+		skillsCarousel = document.getElementById('skills-carousel'),
+		chakraToSelect = 0;
+
+	if (skillsToBeApplied[0]) {
+		skillsToBeApplied.forEach((htmlSkill) => {
+			let img = document.createElement('img');
+				char = eval(htmlSkill.closest('.char').id),
+				skillCost = char.skills[htmlSkill.dataset.skill - 1].chakra,
+				chakraToSelect += skillCost.any ? skillCost.any : 0;
+
+			img.src = htmlSkill.src;
+			img.alt = htmlSkill.alt;
+
+			skillsCarousel.prepend(img);
+		})
+
+		board.style.position = 'relative';
+		modalContainer.style.visibility = 'visible';
+		modalOverlay.style.display = 'block';
+
+		let htmlChakraToSelect = document.getElementById('modal-choose-counter');
+		htmlChakraToSelect.textContent = chakraToSelect;
+	}
+}
+
+function adjustChakra(e) {
+	let subtractedValues = document.querySelectorAll('.subtracted-values span'),
+		index = e.target.dataset.index,
+		leftToChoose = document.getElementById('modal-choose-counter');
+
+		if (e.target.classList.value == 'plus' && Number.parseInt(currentCounters[index].textContent)) {
+			if (leftToChoose.textContent == 0) {
+				return;
+			}
+			subtractedValues[index].textContent++;
+			currentCounters[index].textContent--;
+			leftToChoose.textContent--;
+		} 
+
+		if (e.target.classList.value == 'minus' && Number.parseInt(subtractedValues[index].textContent)) {
+			subtractedValues[index].textContent--;
+			currentCounters[index].textContent++;
+			leftToChoose.textContent++;
+		}
+
+		if (leftToChoose.textContent == 0) {
+			okay.classList.remove('disabled');
+		} else if (!okay.classList.contains('disabled')) {
+			okay.classList.add('disabled');
+		}
 }
