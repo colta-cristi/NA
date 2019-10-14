@@ -45,3 +45,12 @@ endTurnButton.addEventListener('click', function() {
 
     openUpdatedModal(counters);
 });
+
+let htmlAllSkills = document.querySelectorAll('.skills img');
+
+htmlAllSkills.forEach((sk) => {
+	sk.addEventListener('dblclick', (e) => {
+		if(e.target && e.target.classList.contains('skill-to-be-used'))
+		unprepareSkill(e.target);
+	});
+});

@@ -35,9 +35,7 @@ function startGame(char1, char2, char3, char4, char5, char6) {
 	init('ch6', ch6, true);
 
 	chakra = addChakra();
-	updateSkillActivationStatus(ch1);
-	updateSkillActivationStatus(ch2);
-	updateSkillActivationStatus(ch3);
+	updateSkillsActivationStatus();
 }
 
 function init(id, char, enemy = false) {
@@ -95,7 +93,7 @@ function addChakra(charactersAlive = 3) {
 	return chakraCounters;
 }
 
-function updateHtmlChakra(chakraCounters) {
+function updateHtmlChakra(chakraCounters = chakra) {
 	chakraCounters.any = chakraCounters.total.bind(chakraCounters)();
 
 	chakraTypes.forEach((i) => {
@@ -106,24 +104,29 @@ function updateHtmlChakra(chakraCounters) {
 	document.querySelector(`.total .chakra-counter`).innerHTML = '<b>T</b>x' + chakraCounters.any;
 }
 
-function updateSkillActivationStatus(character) {
-	character.skills.forEach(function (skill) {
-		let canActivate = true,
-			chakraNeeded = chakraTypes.filter(type => skill.chakra[type] > 0);
+function updateSkillsActivationStatus(characters = [ch1, ch2, ch3]) {
 
-
-		chakraNeeded.forEach((type) => {
-			if (skill.chakra[type] > chakra[type]) {
-				canActivate = false;
-				document.querySelector(`.skills img[alt="${skill.name}"]`).style.opacity = '';
-				return;
-			}
-			if (chakra[type] >= skill.chakra[type] && canActivate) {
-				canActivate = true;
-				document.querySelector(`.skills img[alt="${skill.name}"]`).style.opacity = 1;
-			}
+	characters.forEach((character) => {
+		character.skills.forEach(function (skill) {
+			let canActivate = true,
+				chakraNeeded = chakraTypes.filter(type => skill.chakra[type] > 0),
+				htmlSkill = document.querySelector(`.skills img[alt="${skill.name}"]`);
+	
+	
+			chakraNeeded.forEach((type) => {
+				// deactivate skill if it was not used this round
+				if (skill.chakra[type] > chakra[type] && !htmlSkill.classList.contains('skill-to-be-used')) {
+					canActivate = false;
+					htmlSkill.style.opacity = '';
+					return;
+				}
+				if (chakra[type] >= skill.chakra[type] && canActivate) {
+					canActivate = true;
+					htmlSkill.style.opacity = 1;
+				}
+			});
 		});
-	});
+	})
 }
 
 function rand(lowest, highest) {
@@ -314,9 +317,7 @@ function endTurn(isConfirmed = false) {
 
 		// TODO: get charactersAlive
 		chakra = addChakra();
-		updateSkillActivationStatus(ch1);
-		updateSkillActivationStatus(ch2);
-		updateSkillActivationStatus(ch3);
+		updateSkillsActivationStatus();
 	}
 
 	return;
@@ -338,16 +339,33 @@ function prepareSkill(skillOwnerName, skill, e) {
 
 	allOverlays.forEach((overlay) => overlay.remove());
 	lastClicked = '';
+	// Update chakra, so i cannot use more skills than i have chakra for
+	Object.keys(skill.chakra).forEach((type) => {
+		if (type != 'any') {
+			chakra[type] -= skill.chakra[type];
+		}
+	})
 
-	htmlSkill.addEventListener('dblclick', () => {
-		unprepareSkill(htmlSkill);
-	});
+	updateHtmlChakra();
+	updateSkillsActivationStatus();
+
 	e.stopPropagation();
 }
 
 function unprepareSkill(htmlSkill) {
 	htmlSkill.style.transform = '';
 	htmlSkill.classList.remove('skill-to-be-used');
+
+	// If i don't want to use a skill anymore, refill chakra
+	let skill = eval(htmlSkill.closest('.char').id).skills[htmlSkill.dataset.skill - 1];
+	Object.keys(skill.chakra).forEach((type) => {
+		if (type != 'any') {
+			chakra[type] += skill.chakra[type];
+		}
+	})
+
+	updateHtmlChakra();
+	updateSkillsActivationStatus();
 }
 
 function applySkill(skill = '', skillTarget = '') {
@@ -384,12 +402,10 @@ function applySkill(skill = '', skillTarget = '') {
 	// TODO: make lines below a function updateChakra()
 	Object.keys(skill.chakra).forEach((type) => {
 		chakra[type] -= skill.chakra[type];
-		updateHtmlChakra(chakra);
+		updateHtmlChakra();
 	});
 
-	updateSkillActivationStatus(ch1);
-	updateSkillActivationStatus(ch2);
-	updateSkillActivationStatus(ch3);
+	updateSkillsActivationStatus();
 }
 
 // modal-related functions & variables
