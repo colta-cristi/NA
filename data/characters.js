@@ -76,7 +76,7 @@ naruto = {
             targets: 'enemy',
             damage: 45,
             heal: 0,
-            requires: 'Shadow Clones',
+            requires: ['Shadow Clones', 2], // skill name and index
             stun_time: 1,
             stun_skills: ['all'],
         },
@@ -91,6 +91,7 @@ naruto = {
             heal: 0,
             armor_type: 'static',
             damage_reduction: 15,
+            activated: 0,
         },
         {
             name: "Sexy Technique",

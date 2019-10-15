@@ -122,7 +122,17 @@ function updateSkillsActivationStatus(characters = [ch1, ch2, ch3]) {
 				}
 				if (chakra[type] >= skill.chakra[type] && canActivate) {
 					canActivate = true;
-					htmlSkill.style.opacity = 1;
+
+					if (skill.requires != undefined) {
+						// check if skill has requirements
+						if (character.skills[skill.requires[1]].activated) {
+							htmlSkill.style.opacity = 1;
+						} else {
+							htmlSkill.style.opacity = '';
+						}
+					} else {
+						htmlSkill.style.opacity = 1;
+					}
 				}
 			});
 		});
@@ -307,14 +317,18 @@ function endTurn(isConfirmed = false) {
 		timer.style.width = '100%';
 
 		if (skillsToBeApplied[0]) {
-			skillsToBeApplied.forEach((skill) => {
-				let skillObject = eval(skill.closest('.char').id).skills[skill.dataset.skill - 1];
+			skillsToBeApplied.forEach((hSkill) => {
+				let skillObject = eval(hSkill.closest('.char').id).skills[hSkill.dataset.skill - 1];
 
-				applySkill(skillObject, skill.dataset.skillTarget);
-				unprepareSkill(skill);
+				if (skillObject.activated != undefined) {
+					debugger;
+					skillObject.activated = 1;
+				}
+
+				applySkill(skillObject, hSkill.dataset.skillTarget);
+				unprepareSkill(hSkill);
 			});
 		}
-
 		// TODO: get charactersAlive
 		chakra = addChakra();
 		updateSkillsActivationStatus();
@@ -324,13 +338,17 @@ function endTurn(isConfirmed = false) {
 }
 
 function prepareSkill(skillOwnerName, skill, e) {
+	let skillAlreadyUsed = document.querySelector(`div[data-name="${skillOwnerName}"] .skill-to-be-used`);
+	if (skillAlreadyUsed) {
+		unprepareSkill(skillAlreadyUsed);
+	}
+
 	let allOverlays = document.querySelectorAll('.overlay');
 
 	// TODO: add skill icon near character avatar
 
-	let htmlSkill = document.querySelector(`img[alt="${skill.name}"`);
-
-	let htmlSelectedSkill = document.querySelector(`div[data-name="${skillOwnerName}"] .selected-skill`);
+	let htmlSkill = document.querySelector(`img[alt="${skill.name}"`),
+		htmlSelectedSkill = document.querySelector(`div[data-name="${skillOwnerName}"] .selected-skill`);
 
 	htmlSkill.style.transform = `translateX(${htmlSelectedSkill.offsetLeft - htmlSkill.offsetLeft}px)`;
 	htmlSkill.classList.add('skill-to-be-used');
