@@ -295,3 +295,11 @@ span.username {
 .text-center {
 	text-align: center;
 }
+
+.cooldown {
+	position: absolute;
+	z-index: 1;
+	font-size: 60px;
+	line-height: 60px;
+	text-align: center;
+}

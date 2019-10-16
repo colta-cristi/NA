@@ -1,7 +1,19 @@
 var chakraTypes = ['taijutsu', 'bloodline', 'ninjutsu', 'genjutsu', 'any'],
 	ch1 = {}, ch2 = {}, ch3 = {}, ch4 = {}, ch5 = {}, ch6 = {},
 	lastClicked,
-	chakra;
+	chakra = {
+		'taijutsu': Number.parseInt(document.querySelector(`.${chakraTypes[0]} .chakra-counter`).textContent[1]),
+		'bloodline': Number.parseInt(document.querySelector(`.${chakraTypes[1]} .chakra-counter`).textContent[1]),
+		'ninjutsu': Number.parseInt(document.querySelector(`.${chakraTypes[2]} .chakra-counter`).textContent[1]),
+		'genjutsu': Number.parseInt(document.querySelector(`.${chakraTypes[3]} .chakra-counter`).textContent[1]),
+		'total': function () {
+			return Number.parseInt(this.taijutsu) + 
+				Number.parseInt(this.ninjutsu) + 
+				Number.parseInt(this.bloodline) + 
+				Number.parseInt(this.genjutsu);
+		}
+	},
+	roundNumber = 1;
 
 function startGame(char1, char2, char3, char4, char5, char6) {
 	// initialize character & skills data
@@ -34,7 +46,7 @@ function startGame(char1, char2, char3, char4, char5, char6) {
 	init('ch5', ch5, true);
 	init('ch6', ch6, true);
 
-	chakra = addChakra();
+	addChakra();
 	updateSkillsActivationStatus();
 }
 
@@ -54,7 +66,7 @@ function init(id, char, enemy = false) {
 	});
 }
 
-function updateTimer(secondsPerRound = 220) {
+function updateTimer(secondsPerRound = 30) {
 	let timer = document.getElementById('timer-bar'),
 		timerContainer = document.getElementById('timer-container');
 
@@ -74,34 +86,28 @@ function updateTimer(secondsPerRound = 220) {
 }
 
 function addChakra(charactersAlive = 3) {
-	let chakraCounters = {
-		'taijutsu': Number.parseInt(document.querySelector(`.${chakraTypes[0]} .chakra-counter`).textContent[1]),
-		'bloodline': Number.parseInt(document.querySelector(`.${chakraTypes[2]} .chakra-counter`).textContent[1]),
-		'ninjutsu': Number.parseInt(document.querySelector(`.${chakraTypes[1]} .chakra-counter`).textContent[1]),
-		'genjutsu': Number.parseInt(document.querySelector(`.${chakraTypes[3]} .chakra-counter`).textContent[1]),
-		'total': function () {
-			return this.taijutsu + this.ninjutsu + this.bloodline + this.genjutsu;
-		}
-	};
+	for (let i = 0; i < charactersAlive; i++) {
+		let random = Math.random(),
+			type = random <= 0.25 ? 'taijutsu' :
+				random > 0.25 && random <= 0.5 ? 'bloodline' : 
+				random > 0.5 && random <= 0.75 ? 'ninjutsu' :
+				'genjutsu';
 
+		chakra[type]++;
+	}
 
-	for (let i = 0; i < charactersAlive; i++)
-		chakraCounters[(chakraTypes[rand(1, 4) - 1])]++;
-
-	updateHtmlChakra(chakraCounters);
-
-	return chakraCounters;
+	updateHtmlChakra();
 }
 
-function updateHtmlChakra(chakraCounters = chakra) {
-	chakraCounters.any = chakraCounters.total.bind(chakraCounters)();
+function updateHtmlChakra() {
+	chakra.any = chakra.total();
 
 	chakraTypes.forEach((i) => {
 		if (i == 'any') return;
-		document.querySelector(`.${i} .chakra-counter`).textContent = 'x' + chakraCounters[i];
+		document.querySelector(`.${i} .chakra-counter`).textContent = 'x' + chakra[i];
 	});
 
-	document.querySelector(`.total .chakra-counter`).innerHTML = '<b>T</b>x' + chakraCounters.any;
+	document.querySelector(`.total .chakra-counter`).innerHTML = '<b>T</b>x' + chakra.total();
 }
 
 function updateSkillsActivationStatus(characters = [ch1, ch2, ch3]) {
@@ -135,13 +141,35 @@ function updateSkillsActivationStatus(characters = [ch1, ch2, ch3]) {
 					}
 				}
 			});
+
+			if ((roundNumber - skill.lastUsedInRound) < skill.cooldown) {
+				htmlSkill.style.opacity = '';
+			} 
+			if ((roundNumber - skill.lastUsedInRound) >= skill.cooldown) {
+				if (htmlSkill.closest('.char').querySelector('.cooldown')){
+					htmlSkill.closest('.char').querySelector('.cooldown').remove();
+				}					
+			}
 		});
 	})
 }
 
-function rand(lowest, highest) {
-	var adjustedHigh = (highest - lowest) + 1;
-	return Math.floor(Math.random() * adjustedHigh) + parseFloat(lowest);
+function createCooldownOverlay(skill) {
+	let htmlSkill = document.querySelector(`.skills img[alt="${skill.name}"]`),
+		htmlSkillTranslatedBy = Math.abs(Number.parseInt(htmlSkill.style.transform.split('(')[1].slice(0, -1)));
+
+	let cdOverlay = document.createElement('div');
+	cdOverlay.innerHTML = skill.cooldown;
+	cdOverlay.style.height = window.getComputedStyle(htmlSkill).height;
+	cdOverlay.style.width = window.getComputedStyle(htmlSkill).width;
+	cdOverlay.classList.add('cooldown');
+
+	cdOverlay.style.top = htmlSkill.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(htmlSkill).border) + 'px';
+	cdOverlay.style.left = htmlSkill.getBoundingClientRect().left + htmlSkillTranslatedBy + Number.parseInt(window.getComputedStyle(htmlSkill).border) + 'px';
+
+	let tmp = document.createElement("div");
+	tmp.appendChild(cdOverlay);
+	htmlSkill.insertAdjacentHTML('beforebegin', tmp.innerHTML);
 }
 
 function toggleOverlay(e) {
@@ -321,17 +349,25 @@ function endTurn(isConfirmed = false) {
 				let skillObject = eval(hSkill.closest('.char').id).skills[hSkill.dataset.skill - 1];
 
 				if (skillObject.activated != undefined) {
-					debugger;
 					skillObject.activated = 1;
 				}
 
 				applySkill(skillObject, hSkill.dataset.skillTarget);
+				createCooldownOverlay(skillObject);
 				unprepareSkill(hSkill);
 			});
 		}
 		// TODO: get charactersAlive
-		chakra = addChakra();
+		addChakra();
 		updateSkillsActivationStatus();
+		roundNumber++;
+
+		let cooldownDivs = document.querySelectorAll('.cooldown');
+		cooldownDivs.forEach((cd) => {
+			let skill = eval(cd.closest('.char').id).skills[cd.nextElementSibling.dataset.skill - 1];
+			
+			cd.textContent = skill.cooldown + skill.lastUsedInRound - roundNumber + 1;
+		})
 	}
 
 	return;
@@ -423,6 +459,7 @@ function applySkill(skill = '', skillTarget = '') {
 		updateHtmlChakra();
 	});
 
+	skill.lastUsedInRound = roundNumber;
 	updateSkillsActivationStatus();
 }
 
@@ -493,6 +530,12 @@ function openUpdatedModal(counters) {
 
 		let htmlChakraToSelect = document.getElementById('modal-choose-counter');
 		htmlChakraToSelect.textContent = chakraToSelect;
+
+		if (htmlChakraToSelect.textContent == 0) {
+			okay.classList.remove('disabled');
+		} else if (!okay.classList.contains('disabled')) {
+			okay.classList.add('disabled');
+		}
 	}
 }
 
