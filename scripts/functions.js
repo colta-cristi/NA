@@ -130,9 +130,9 @@ function updateSkillsActivationStatus(characters = [ch1, ch2, ch3]) {
 					canActivate = true;
 
 					if (skill.requires != undefined) {
-						// check if skill has requirements
+						// check if skill has requirements; if the required skill is activated and is not in cooldown, i can use it
 						if (character.skills[skill.requires[1]].activated) {
-							htmlSkill.style.opacity = 1;
+							htmlSkill.style.opacity = skill.isInCooldown ? '' : 1;
 						} else {
 							htmlSkill.style.opacity = '';
 						}
@@ -142,13 +142,8 @@ function updateSkillsActivationStatus(characters = [ch1, ch2, ch3]) {
 				}
 			});
 
-			if ((roundNumber - skill.lastUsedInRound) < skill.cooldown) {
+			if (skill.isInCooldown) {
 				htmlSkill.style.opacity = '';
-			} 
-			if ((roundNumber - skill.lastUsedInRound) >= skill.cooldown) {
-				if (htmlSkill.closest('.char').querySelector('.cooldown')){
-					htmlSkill.closest('.char').querySelector('.cooldown').remove();
-				}					
 			}
 		});
 	})
@@ -358,16 +353,21 @@ function endTurn(isConfirmed = false) {
 			});
 		}
 		// TODO: get charactersAlive
-		addChakra();
-		updateSkillsActivationStatus();
-		roundNumber++;
-
 		let cooldownDivs = document.querySelectorAll('.cooldown');
 		cooldownDivs.forEach((cd) => {
 			let skill = eval(cd.closest('.char').id).skills[cd.nextElementSibling.dataset.skill - 1];
 			
-			cd.textContent = skill.cooldown + skill.lastUsedInRound - roundNumber + 1;
-		})
+			cd.textContent = skill.cooldown + skill.lastUsedInRound - roundNumber;
+
+			if (cd.textContent == 0) {
+				cd.remove();
+				skill.isInCooldown = false;
+			}
+		});
+
+		addChakra();
+		updateSkillsActivationStatus();
+		roundNumber++;
 	}
 
 	return;
@@ -460,6 +460,7 @@ function applySkill(skill = '', skillTarget = '') {
 	});
 
 	skill.lastUsedInRound = roundNumber;
+	skill.isInCooldown = true;
 	updateSkillsActivationStatus();
 }
 
@@ -501,7 +502,13 @@ function closeModal() {
 }
 
 function openUpdatedModal(counters) {
-	let i = 0;
+	let i = 0,
+		subtractedValues = document.querySelectorAll('.subtracted-values span');
+
+	// Reset values each time i open this modal
+	subtractedValues.forEach((val) => {
+		val.textContent = 0;
+	});
 
 	counters.forEach((c) => {
 		currentCounters[i++].textContent = c;
