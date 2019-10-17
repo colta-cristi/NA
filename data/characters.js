@@ -15,6 +15,7 @@ let sakura = {
             additional: ['Inner Sakura', 10],
             stun_time: 1,
             stun_skills: ['Physical, Mental'],
+            effectLasts: 1,
         },
         {
             name: 'Cure',
@@ -25,6 +26,7 @@ let sakura = {
             targets: 'ally, self',
             damage: 0,
             heal: 25,
+            effectLasts: 0,
         },
         {
             name: 'Inner Sakura',
@@ -37,6 +39,7 @@ let sakura = {
             heal: 0,
             armor_type: 'static',
             damage_reduction: 10,
+            effectLasts: 4,
         },
         {
             name: 'Sakura Hide',
@@ -47,6 +50,7 @@ let sakura = {
             targets: 'self',
             damage: 0,
             heal: 0,
+            effectLasts: 1,
         }
     ]
 },
@@ -66,6 +70,7 @@ naruto = {
             damage: 20,
             heal: 0,
             additional: ['Shadow Clones', 10],
+            effectLasts: 0,
         },
         {
             name: 'Rasengan',
@@ -79,6 +84,7 @@ naruto = {
             requires: ['Shadow Clones', 2], // skill name and index
             stun_time: 1,
             stun_skills: ['all'],
+            effectLasts: 1,
         },
         {
             name: 'Shadow Clones',
@@ -92,6 +98,7 @@ naruto = {
             armor_type: 'static',
             damage_reduction: 15,
             activated: 0,
+            effectLasts: 4,
         },
         {
             name: "Sexy Technique",
@@ -102,6 +109,7 @@ naruto = {
             targets: 'self',
             damage: 0,
             heal: 0,
+            effectLasts: 1,
         }
     ]
 },
@@ -121,6 +129,7 @@ sasuke = {
             damage: 30,
             heal: 0,
             additional: ['Sharingan', 15],
+            effectLasts: 0,
         },
         {
             name: 'Chidori',
@@ -132,6 +141,7 @@ sasuke = {
             damage: 30,
             heal: 0,
             additional: ['Sharingan', 25],
+            effectLasts: 0,
         },
         {
             name: 'Sharingan',
@@ -144,6 +154,7 @@ sasuke = {
             heal: 0,
             armor_type: 'static',
             damage_reduction: 15,
+            effectLasts: 4,
         },
         {
             name: 'Swift Block',
@@ -154,6 +165,7 @@ sasuke = {
             targets: 'self',
             damage: 0,
             heal: 0,
+            effectLasts: 1,
         }
     ]
 };

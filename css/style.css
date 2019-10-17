@@ -186,7 +186,6 @@ span.username {
 	opacity: 0.5;
 	z-index: 0;
 	color: #aaa;
-	position: relative;
 	transition: transform .5s;
 }
 
@@ -302,4 +301,30 @@ span.username {
 	font-size: 60px;
 	line-height: 60px;
 	text-align: center;
+}
+
+.char {
+	position: relative;
+}
+
+.affected-by {
+	position: absolute;
+	top: 0;
+	display: flex;
+}
+
+#team-a .affected-by {
+	left: 80px;
+	justify-content: flex-start;
+}
+
+#team-b  .affected-by {
+	right: 75px;
+	justify-content: flex-end;
+}
+
+.affected-by img {
+	height: 20px;
+	width: 20px;
+	margin-right: 5px;
 }

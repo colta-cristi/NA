@@ -159,8 +159,8 @@ function createCooldownOverlay(skill) {
 	cdOverlay.style.width = window.getComputedStyle(htmlSkill).width;
 	cdOverlay.classList.add('cooldown');
 
-	cdOverlay.style.top = htmlSkill.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(htmlSkill).border) + 'px';
-	cdOverlay.style.left = htmlSkill.getBoundingClientRect().left + htmlSkillTranslatedBy + Number.parseInt(window.getComputedStyle(htmlSkill).border) + 'px';
+	cdOverlay.style.top = htmlSkill.offsetTop + Number.parseInt(window.getComputedStyle(htmlSkill).border) + 'px';
+	cdOverlay.style.left = htmlSkill.offsetLeft + Number.parseInt(window.getComputedStyle(htmlSkill).border) + 'px';
 
 	let tmp = document.createElement("div");
 	tmp.appendChild(cdOverlay);
@@ -207,8 +207,8 @@ function toggleOverlay(e) {
 		skillOverlay.style.height = target.height + 'px';
 		skillOverlay.style.width = target.width + 'px';
 
-		skillOverlay.style.top = target.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(target).border) + 'px';
-		skillOverlay.style.left = target.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(target).border) + 'px';
+		skillOverlay.style.top = target.offsetTop + Number.parseInt(window.getComputedStyle(target).border) + 'px';
+		skillOverlay.style.left = target.offsetLeft + Number.parseInt(window.getComputedStyle(target).border) + 'px';
 		skillOverlay.classList.add('overlay');
 
 		let tmp = document.createElement("div");
@@ -249,33 +249,29 @@ function toggleOverlay(e) {
 	});
 }
 
-function addCharacterOverlay(target) {
+function addCharacterOverlay(skillTargets) {
 	let overlay = document.createElement('div');
-	if (target.length) {
-		target.forEach((enemy) => {
-			overlay.style.height = enemy.height + 'px';
-			overlay.style.width = enemy.width + 'px';
+	if (skillTargets.length) {
+		skillTargets.forEach((target) => {
+			overlay.style.height = target.height + 'px';
+			overlay.style.width = target.width + 'px';
 
-			overlay.style.top = enemy.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(enemy).border) + 'px';
-			overlay.style.left = enemy.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(enemy).border) + 'px';
 			overlay.classList.add('overlay');
 			overlay.classList.add('character');
 
 			let tmp2 = document.createElement("div");
 			tmp2.appendChild(overlay);
-			enemy.insertAdjacentHTML('beforebegin', tmp2.innerHTML);
+			target.insertAdjacentHTML('beforebegin', tmp2.innerHTML);
 		});
 	} else {
-		overlay.style.height = target.height + 'px';
-		overlay.style.width = target.width + 'px';
+		overlay.style.height = skillTargets.height + 'px';
+		overlay.style.width = skillTargets.width + 'px';
 
-		overlay.style.top = target.getBoundingClientRect().top + Number.parseInt(window.getComputedStyle(target).border) + 'px';
-		overlay.style.left = target.getBoundingClientRect().left + Number.parseInt(window.getComputedStyle(target).border) + 'px';
 		overlay.classList.add('overlay');
 
 		let tmp2 = document.createElement("div");
 		tmp2.appendChild(overlay);
-		target.insertAdjacentHTML('beforebegin', tmp2.innerHTML);
+		skillTargets.insertAdjacentHTML('beforebegin', tmp2.innerHTML);
 	}
 }
 
@@ -383,13 +379,22 @@ function prepareSkill(skillOwnerName, skill, e) {
 
 	// TODO: add skill icon near character avatar
 
-	let htmlSkill = document.querySelector(`img[alt="${skill.name}"`),
-		htmlSelectedSkill = document.querySelector(`div[data-name="${skillOwnerName}"] .selected-skill`);
+	let htmlSkill = document.querySelector(`img[alt="${skill.name}"][data-skill]`),
+		htmlSelectedSkill = document.querySelector(`div[data-name="${skillOwnerName}"] .selected-skill`),
+		htmlSkillTarget = e.target.closest('.char');
 
 	htmlSkill.style.transform = `translateX(${htmlSelectedSkill.offsetLeft - htmlSkill.offsetLeft}px)`;
 	htmlSkill.classList.add('skill-to-be-used');
-	htmlSkill.setAttribute('data-skill-target', e.target.closest('.char').id);
+	htmlSkill.setAttribute('data-skill-target', htmlSkillTarget.id);
 
+	let affectedByDiv = htmlSkillTarget.querySelector('.affected-by'),
+		img = document.createElement('img');
+
+	img.src = `images/${skillOwnerName}/${htmlSkill.dataset.skill}.jpg`;
+	img.alt = htmlSkill.alt;
+	img.classList.add('icon');
+
+	affectedByDiv.prepend(img);
 
 	allOverlays.forEach((overlay) => overlay.remove());
 	lastClicked = '';
@@ -409,6 +414,8 @@ function prepareSkill(skillOwnerName, skill, e) {
 function unprepareSkill(htmlSkill) {
 	htmlSkill.style.transform = '';
 	htmlSkill.classList.remove('skill-to-be-used');
+
+	document.querySelector(`.char .affected-by img[class="icon"][alt="${htmlSkill.alt}"]`).remove();
 
 	// If i don't want to use a skill anymore, refill chakra
 	let skill = eval(htmlSkill.closest('.char').id).skills[htmlSkill.dataset.skill - 1];
